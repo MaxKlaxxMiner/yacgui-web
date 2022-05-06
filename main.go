@@ -34,11 +34,11 @@ func wsReader(conn *websocket.Conn) {
 
 func wsTicker(conn *websocket.Conn) {
 	for {
-		err := conn.WriteMessage(1, []byte("tick: "+time.Now().String()))
-		if err != nil {
+		message := "tick: " + time.Now().String()
+		if err := conn.WriteMessage(1, []byte(message)); err != nil {
 			return
 		}
-		time.Sleep(time.Second / 60)
+		time.Sleep(time.Second * 3)
 	}
 }
 
