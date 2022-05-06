@@ -54,9 +54,18 @@ window.addEventListener("keydown", e => {
 let socket = new WebSocket("ws://" + location.host + "/ws");
 loglog("Attempting Connection...");
 
+function send(value: {}) {
+    socket.send(JSON.stringify(value));
+}
+
+let pingTicker: number;
+
 socket.onopen = () => {
     loglog("Successfully Connected");
-    socket.send("Hi From the Client!")
+    send({txt: "huhu"});
+    pingTicker = setInterval(() => {
+        send({ping: true});
+    }, 3000);
 };
 
 socket.onmessage = event => {
@@ -66,14 +75,16 @@ socket.onmessage = event => {
 socket.onclose = event => {
     console.log("Socket Closed Connection: ", event);
     loglog("Socket Closed Connection");
-    socket.send("Client Closed!")
+    send({close: true})
+    clearInterval(pingTicker)
 };
 
 socket.onerror = error => {
     console.log("Socket Error: ", error);
     loglog("Socket Error");
+    clearInterval(pingTicker)
 };
 
 (<any>window).send = (x: string) => {
-    socket.send(x);
+    send({txt: x});
 };

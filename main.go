@@ -1,62 +1,66 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"log"
 	"mime"
 	"net/http"
+	"nhooyr.io/websocket"
+	"nhooyr.io/websocket/wsjson"
 	"time"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func wsReader(conn *websocket.Conn) {
+func wsReader(c *websocket.Conn, r *http.Request) {
 	for {
-		messageType, p, err := conn.ReadMessage()
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second*10)
+
+		var v any
+		err := wsjson.Read(ctx, c, &v)
+		cancel()
 		if err != nil {
-			log.Println(err)
+			if websocket.CloseStatus(err) != websocket.StatusNormalClosure &&
+				websocket.CloseStatus(err) != websocket.StatusGoingAway {
+				log.Println(err)
+			}
 			return
 		}
-		fmt.Println(string(p))
 
-		p = []byte("löl: " + string(p))
-
-		if err = conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
+		fmt.Println("received:", v)
 	}
 }
 
-func wsTicker(conn *websocket.Conn) {
+func wsTicker(c *websocket.Conn, r *http.Request) {
 	for {
 		message := "tick: " + time.Now().String()
-		if err := conn.WriteMessage(1, []byte(message)); err != nil {
+
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second*10)
+		err := wsjson.Write(ctx, c, message)
+		cancel()
+		if err != nil {
+			if websocket.CloseStatus(err) != websocket.StatusNormalClosure &&
+				websocket.CloseStatus(err) != websocket.StatusGoingAway {
+				log.Println(err)
+			}
 			return
 		}
+
 		time.Sleep(time.Second * 3)
 	}
 }
 
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	ws, err := upgrader.Upgrade(w, r, nil)
+	c, err := websocket.Accept(w, r, nil)
 	if err != nil {
 		log.Println(err)
+		return
 	}
-	log.Println("Client Connected")
+	defer c.Close(websocket.StatusInternalError, "")
 
-	err = ws.WriteMessage(1, []byte("Hi Client!"))
-	if err != nil {
-		log.Println(err)
-	}
+	go wsTicker(c, r)
+	wsReader(c, r)
 
-	go wsTicker(ws)
-	wsReader(ws)
+	c.Close(websocket.StatusNormalClosure, "")
 }
 
 func main() {
