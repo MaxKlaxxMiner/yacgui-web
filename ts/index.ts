@@ -3,7 +3,22 @@ import {Config} from "./chessground/config";
 import {Key} from "./chessground/types";
 
 function loglog(line: string) {
-    document.getElementById("output").innerHTML += line + "<br>";
+    const o = document.getElementById("output");
+    let html = o.innerHTML;
+    html += line + "<br>";
+    if (document.getElementById("board").clientHeight - 20 < o.clientHeight) {
+        const i = html.indexOf("<br>");
+        if (i >= 0) {
+            html = html.substring(i + 4);
+        }
+    }
+    if (document.getElementById("board").clientHeight < o.clientHeight) {
+        const i = html.indexOf("<br>");
+        if (i >= 0) {
+            html = html.substring(i + 4);
+        }
+    }
+    o.innerHTML = html;
 }
 
 const dests = new Map<Key, Key[]>();
@@ -35,3 +50,30 @@ window.addEventListener("keydown", e => {
         e.preventDefault()
     }
 });
+
+let socket = new WebSocket("ws://" + location.host + "/ws");
+loglog("Attempting Connection...");
+
+socket.onopen = () => {
+    loglog("Successfully Connected");
+    socket.send("Hi From the Client!")
+};
+
+socket.onmessage = event => {
+    loglog(event.data);
+}
+
+socket.onclose = event => {
+    console.log("Socket Closed Connection: ", event);
+    loglog("Socket Closed Connection");
+    socket.send("Client Closed!")
+};
+
+socket.onerror = error => {
+    console.log("Socket Error: ", error);
+    loglog("Socket Error");
+};
+
+(<any>window).send = (x: string) => {
+    socket.send(x);
+};

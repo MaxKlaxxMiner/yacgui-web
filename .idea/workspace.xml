@@ -5,98 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9168fddf-2df1-4340-9b36-8c31d21ca64f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/yacgui-web.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/css/chessground.base.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/css/chessground.brown.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/css/chessground.cburnett.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/lichess.chess.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/lichess.chess.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/lichess.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/lichess.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-cyrillic-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-cyrillic.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-devanagari.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-greek-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-greek.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-bold-vietnamese.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-cyrillic-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-cyrillic.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-devanagari.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-greek-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-greek.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-v14-latin-700.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-v14-latin-ext-700.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-v14-latin-ext-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-v14-latin-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/noto-sans-vietnamese.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-cyrillic-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-cyrillic.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-greek-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-greek.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-latin-ext.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-latin.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/font/roboto-light-vietnamese.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/anim.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/anim.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/api.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/api.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/autoPieces.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/autoPieces.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/board.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/board.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/chessground.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/chessground.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/config.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/drag.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/drag.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/draw.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/draw.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/drop.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/drop.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/events.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/events.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/explosion.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/explosion.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/fen.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/fen.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/index.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/premove.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/premove.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/render.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/render.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/rollup.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/state.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/state.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/svg.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/svg.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/sync.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/sync.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/types.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/types.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/util.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/util.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/wrap.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/chessground/wrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ts/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/chessground.base.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/chessground.base.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/ts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ts/index.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/ts/index.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/ts/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../../../Program Files/Go" />
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Go/src/time/format.go" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -115,6 +44,7 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
@@ -122,7 +52,8 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Max&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MaxKlaxx/Desktop/Prog/Go/yacgui-web&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\GoLand 2022.1\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;
   }
 }</component>
