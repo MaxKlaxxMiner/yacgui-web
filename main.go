@@ -14,7 +14,6 @@ import (
 func wsReader(c *websocket.Conn, r *http.Request) {
 	for {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second*10)
-
 		var v any
 		err := wsjson.Read(ctx, c, &v)
 		cancel()

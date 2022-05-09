@@ -33,6 +33,7 @@ const config: Config = {
     }
 };
 const ground = Chessground(document.getElementById("board"), config);
+(<any>window).ground = ground;
 
 let lastFen = ground.getFen();
 setInterval(() => {
@@ -43,48 +44,18 @@ setInterval(() => {
     }
 }, 10);
 
+declare function GoKeyDown(key: string, defaultPrevented: boolean): boolean;
+
 window.addEventListener("keydown", e => {
-    if (e.defaultPrevented) return
-    if (e.code == "KeyF") {
-        ground.toggleOrientation();
+    if (GoKeyDown(e.code, e.defaultPrevented)) {
         e.preventDefault()
     }
 });
 
-let socket = new WebSocket("ws://" + location.host + "/ws");
-loglog("Attempting Connection...");
+(<any>window).loglog = loglog;
 
-function send(value: {}) {
-    socket.send(JSON.stringify(value));
-}
-
-let pingTicker: number;
-
-socket.onopen = () => {
-    loglog("Successfully Connected");
-    send({txt: "huhu"});
-    pingTicker = setInterval(() => {
-        send({ping: true});
-    }, 3000);
-};
-
-socket.onmessage = event => {
-    loglog(event.data);
-}
-
-socket.onclose = event => {
-    console.log("Socket Closed Connection: ", event);
-    loglog("Socket Closed Connection");
-    send({close: true})
-    clearInterval(pingTicker)
-};
-
-socket.onerror = error => {
-    console.log("Socket Error: ", error);
-    loglog("Socket Error");
-    clearInterval(pingTicker)
-};
-
-(<any>window).send = (x: string) => {
-    send({txt: x});
-};
+// @ts-ignore
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("wasm/main.wasm"), go.importObject).then((result) => {
+    go.run(result.instance);
+});

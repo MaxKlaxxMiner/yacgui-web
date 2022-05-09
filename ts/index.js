@@ -28,6 +28,7 @@ var config = {
     }
 };
 var ground = Chessground(document.getElementById("board"), config);
+window.ground = ground;
 var lastFen = ground.getFen();
 setInterval(function () {
     var fen = ground.getFen();
@@ -37,41 +38,14 @@ setInterval(function () {
     }
 }, 10);
 window.addEventListener("keydown", function (e) {
-    if (e.defaultPrevented)
-        return;
-    if (e.code == "KeyF") {
-        ground.toggleOrientation();
+    if (GoKeyDown(e.code, e.defaultPrevented)) {
         e.preventDefault();
     }
 });
-var socket = new WebSocket("ws://" + location.host + "/ws");
-loglog("Attempting Connection...");
-function send(value) {
-    socket.send(JSON.stringify(value));
-}
-var pingTicker;
-socket.onopen = function () {
-    loglog("Successfully Connected");
-    send({ txt: "huhu" });
-    pingTicker = setInterval(function () {
-        send({ ping: true });
-    }, 3000);
-};
-socket.onmessage = function (event) {
-    loglog(event.data);
-};
-socket.onclose = function (event) {
-    console.log("Socket Closed Connection: ", event);
-    loglog("Socket Closed Connection");
-    send({ close: true });
-    clearInterval(pingTicker);
-};
-socket.onerror = function (error) {
-    console.log("Socket Error: ", error);
-    loglog("Socket Error");
-    clearInterval(pingTicker);
-};
-window.send = function (x) {
-    send({ txt: x });
-};
+window.loglog = loglog;
+// @ts-ignore
+var go = new Go();
+WebAssembly.instantiateStreaming(fetch("wasm/main.wasm"), go.importObject).then(function (result) {
+    go.run(result.instance);
+});
 //# sourceMappingURL=index.js.map
