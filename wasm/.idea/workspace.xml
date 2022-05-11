@@ -5,16 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="362b0895-b605-4027-9f46-7d355a834261" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../js/wasm_exec.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/BoardInfo.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/BoardTools.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/Crc64/Crc64.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/Crc64/YacBoard.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/FEN.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/Move.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/Piece.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../YacBoard/YacBoard.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/init.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/keyDown.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/loglog.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/yacgui-web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/yacgui-web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts/index.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +67,7 @@
     "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "C:/Users/Max",
+    "last_opened_file_path": "C:/Users/Max/Desktop/prog/Spiele/Chess/Go/yacgui-web/wasm/WasmGlobal",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -63,6 +75,14 @@
     "settings.editor.selected.configurable": "com.goide.configuration.GoProjectSettingsConfigurable"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Max\Desktop\prog\Spiele\Chess\Go\yacgui-web\wasm\WasmGlobal" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Max\Desktop\prog\Spiele\Chess\Go\yacgui-web\wasm\WasmGlobal" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="wasm" />

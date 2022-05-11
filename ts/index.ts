@@ -2,7 +2,51 @@ import Chessground from "./chessground/index.js";
 import {Config} from "./chessground/config";
 import {Key} from "./chessground/types";
 
-function loglog(line: string) {
+interface WasmGlobal {
+    ready();
+
+    test();
+    keyDown(key: string, defaultPrevented: boolean): boolean;
+    loglog(ling: string);
+}
+
+const wg: WasmGlobal = <any>{};
+(<any>window).wg = wg;
+
+wg.ready = () => {
+    console.log("ts: ready()")
+
+    const dests = new Map<Key, Key[]>();
+    dests.clear();
+    dests.set("e2", ["e3", "e4"]);
+
+    const config: Config = {
+        fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        movable: {
+            free: false,
+            dests: dests
+        }
+    };
+    const ground = Chessground(document.getElementById("board"), config);
+    (<any>window).ground = ground;
+
+    let lastFen = ground.getFen();
+    setInterval(() => {
+        const fen = ground.getFen();
+        if (fen !== lastFen) {
+            lastFen = fen;
+            wg.loglog(fen);
+        }
+    }, 10);
+
+    window.addEventListener("keydown", e => {
+        if (wg.keyDown(e.code, e.defaultPrevented)) {
+            e.preventDefault()
+        }
+    });
+};
+
+wg.loglog = line => {
     const o = document.getElementById("output");
     let html = o.innerHTML;
     html += line + "<br>";
@@ -19,40 +63,7 @@ function loglog(line: string) {
         }
     }
     o.innerHTML = html;
-}
-
-const dests = new Map<Key, Key[]>();
-dests.clear();
-dests.set("e2", ["e3", "e4"]);
-
-const config: Config = {
-    fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    movable: {
-        free: false,
-        dests: dests
-    }
 };
-const ground = Chessground(document.getElementById("board"), config);
-(<any>window).ground = ground;
-
-let lastFen = ground.getFen();
-setInterval(() => {
-    const fen = ground.getFen();
-    if (fen !== lastFen) {
-        lastFen = fen;
-        loglog(fen);
-    }
-}, 10);
-
-declare function GoKeyDown(key: string, defaultPrevented: boolean): boolean;
-
-window.addEventListener("keydown", e => {
-    if (GoKeyDown(e.code, e.defaultPrevented)) {
-        e.preventDefault()
-    }
-});
-
-(<any>window).loglog = loglog;
 
 // @ts-ignore
 const go = new Go();

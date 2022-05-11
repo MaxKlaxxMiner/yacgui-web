@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/MaxKlaxxMiner/yacgui-web/YacBoard/Crc64"
 	"log"
 	"mime"
 	"net/http"
@@ -62,7 +63,22 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	c.Close(websocket.StatusNormalClosure, "")
 }
 
+func testYacBoard() {
+	v := Crc64.CrcStart
+	fmt.Println(v)
+	//var board YacBoard.YacBoard
+	//err := board.SetFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//fmt.Println(Crc64.FromBoard(&board))
+}
+
 func main() {
+	//testYacBoard()
+	//return
+
 	_ = mime.AddExtensionType(".js", "application/javascript")
 	//ct := mime.TypeByExtension(".js")
 	//fmt.Printf("ct: %s\n", ct)
@@ -70,6 +86,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/ws", wsEndpoint)
 
+	fmt.Println("run server: localhost:9090")
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
 		fmt.Println("Failed to start server", err)

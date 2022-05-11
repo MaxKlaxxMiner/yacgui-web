@@ -3,14 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/MaxKlaxxMiner/yacgui-web/YacBoard"
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"
 	"syscall/js"
 	"time"
+	. "wasm/WasmGlobal"
 )
 
 func loglog(line string) {
-	js.Global().Call("loglog", line)
+	js.Global().Get("wg").Call("loglog", line)
 }
 
 func wsReader(c *websocket.Conn) {
@@ -32,10 +34,16 @@ func wsReader(c *websocket.Conn) {
 }
 
 func wsPinger(c *websocket.Conn) {
+	var board YacBoard.YacBoard
+	err := board.SetFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	if err != nil {
+		panic(err)
+	}
+
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
-		err := wsjson.Write(ctx, c, "ping")
+		err := wsjson.Write(ctx, c, "fen: "+board.GetFEN())
 		cancel()
 		if err != nil {
 			break
@@ -46,12 +54,6 @@ func wsPinger(c *websocket.Conn) {
 }
 
 func main() {
-	js.Global().Set("GoKeyDown", js.FuncOf(GoKeyDown))
-
-	//js.Global().Set("balla", js.FuncOf(balla))
-	//// balla = function() { this. }
-	//
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	c, _, err := websocket.Dial(ctx, "ws://localhost:9090/ws", nil)
 	cancel()
@@ -61,32 +63,13 @@ func main() {
 	}
 	defer c.Close(websocket.StatusInternalError, "")
 
+	WgInit()
+
 	go wsReader(c)
 	wsPinger(c)
 
 	c.Close(websocket.StatusNormalClosure, "")
 
-	////js.Global().Get("console").Call("log", "muh")
-
 	//c := make(chan struct{}, 0)
 	//<-c
-}
-
-func GoKeyDown(_ js.Value, args []js.Value) any {
-	if len(args) != 2 || args[0].Type() != js.TypeString || args[1].Type() != js.TypeBoolean {
-		return false
-	}
-	code := args[0].String()
-	defaultPrevented := args[1].Bool()
-
-	if defaultPrevented {
-		return false
-	}
-
-	if code == "KeyF" {
-		js.Global().Get("ground").Call("toggleOrientation")
-		return true
-	}
-
-	return false
 }
