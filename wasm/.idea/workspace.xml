@@ -4,30 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="362b0895-b605-4027-9f46-7d355a834261" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../YacBoard/BoardInfo.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/BoardTools.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/Crc64/Crc64.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/Crc64/YacBoard.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/FEN.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/Move.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/Piece.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../YacBoard/YacBoard.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WasmGlobal/init.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WasmGlobal/keyDown.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WasmGlobal/loglog.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WasmGlobal/test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/yacgui-web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/yacgui-web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts/index.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-    </list>
+    <list default="true" id="362b0895-b605-4027-9f46-7d355a834261" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,7 +17,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../../../../Program Files/Go" />
+  <component name="GOROOT" url="file:///C:/Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
@@ -61,13 +38,17 @@
     "DefaultGoTemplateProperty": "Go File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
     "WebServerToolWindowFactoryState": "false",
+    "configurable..is.expanded": "false",
+    "configurable.GoLibrariesConfigurable.is.expanded": "true",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "C:/Users/Max/Desktop/prog/Spiele/Chess/Go/yacgui-web/wasm/WasmGlobal",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "C:/Users/MaxKlaxx/Desktop/Prog/Go/yacgui-web/wasm",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

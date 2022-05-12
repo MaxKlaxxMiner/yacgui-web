@@ -25,7 +25,7 @@ func (crc64 Value) UpdateString(value string) Value {
 	for i := 0; i < len(value); i++ {
 		result = (result ^ Value(value[i])) * CrcMul
 	}
-	return crc64
+	return result
 }
 
 func (crc64 Value) UpdatePieces(value []YacBoard.Piece) Value {
@@ -33,5 +33,5 @@ func (crc64 Value) UpdatePieces(value []YacBoard.Piece) Value {
 	for i := 0; i < len(value); i++ {
 		result = (result ^ Value(value[i])) * CrcMul
 	}
-	return crc64
+	return result
 }
