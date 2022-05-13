@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9168fddf-2df1-4340-9b36-8c31d21ca64f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/YacBoard/MoveGenerator.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/Crc64/Crc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/YacBoard/Crc64/Crc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/YacBoard/YacBoard.go" beforeDir="false" afterPath="$PROJECT_DIR$/YacBoard/YacBoard.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wasm/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wasm/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wasm/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/wasm/go.mod" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

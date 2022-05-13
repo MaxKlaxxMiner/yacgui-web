@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/MaxKlaxxMiner/yacgui-web/YacBoard"
-	"github.com/MaxKlaxxMiner/yacgui-web/YacBoard/Crc64"
 	"log"
 	"mime"
 	"net/http"
@@ -65,15 +64,20 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func testYacBoard() {
-	v := Crc64.CrcStart
-	fmt.Println(v)
 	var board YacBoard.YacBoard
 	err := board.SetFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(Crc64.FromBoard(&board))
+	var moves [256]YacBoard.Move
+	moveCount := board.GetMoves(&moves)
+
+	for i := 0; i < int(moveCount); i++ {
+		fmt.Printf("    %3d - %v\n", i+1, moves[i])
+	}
+
+	//fmt.Println(Crc64.FromBoard(&board))
 }
 
 func main() {
