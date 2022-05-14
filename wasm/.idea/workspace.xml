@@ -5,12 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="362b0895-b605-4027-9f46-7d355a834261" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/doMove.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WasmGlobal/getMoveMapFromFEN.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../YacBoard/BoardInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/../YacBoard/BoardInfo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../YacBoard/FEN.go" beforeDir="false" afterPath="$PROJECT_DIR$/../YacBoard/FEN.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../YacBoard/MoveGenerator.go" beforeDir="false" afterPath="$PROJECT_DIR$/../YacBoard/MoveGenerator.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../YacBoard/YacBoard.go" beforeDir="false" afterPath="$PROJECT_DIR$/../YacBoard/YacBoard.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts/index.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WasmGlobal/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/WasmGlobal/init.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

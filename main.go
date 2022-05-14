@@ -63,6 +63,23 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	c.Close(websocket.StatusNormalClosure, "")
 }
 
+func MoveCounter(board *YacBoard.YacBoard, level int) int {
+	var moves [256]YacBoard.Move
+	moveCount := int(board.GetMoves(&moves))
+	if level <= 1 {
+		return moveCount
+	}
+	level--
+	totalCount := 0
+	bi := board.GetBoardInfo()
+	for m := 0; m < moveCount; m++ {
+		board.DoMove(moves[m])
+		totalCount += MoveCounter(board, level)
+		board.DoMoveBackward(moves[m], bi)
+	}
+	return totalCount
+}
+
 func testYacBoard() {
 	var board YacBoard.YacBoard
 	err := board.SetFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
@@ -70,19 +87,24 @@ func testYacBoard() {
 		panic(err)
 	}
 
-	var moves [256]YacBoard.Move
-	moveCount := board.GetMoves(&moves)
-
-	for i := 0; i < int(moveCount); i++ {
-		fmt.Printf("    %3d - %v\n", i+1, moves[i])
+	for level := 1; level < 7; level++ {
+		fmt.Print("Level: ", level, " Count: ")
+		fmt.Println(MoveCounter(&board, level))
 	}
+
+	//var moves [256]YacBoard.Move
+	//moveCount := board.GetMoves(&moves)
+
+	//for i := 0; i < int(moveCount); i++ {
+	//	fmt.Printf("    %3d - %v\n", i+1, moves[i])
+	//}
 
 	//fmt.Println(Crc64.FromBoard(&board))
 }
 
 func main() {
-	testYacBoard()
-	return
+	//testYacBoard()
+	//return
 
 	_ = mime.AddExtensionType(".js", "application/javascript")
 	//ct := mime.TypeByExtension(".js")
