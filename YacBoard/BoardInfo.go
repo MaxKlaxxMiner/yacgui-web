@@ -26,5 +26,5 @@ const (
 	WhiteCanCastleQueenside BoardInfo = 0x0200
 	BlackCanCastleKingside  BoardInfo = 0x0400
 	BlackCanCastleQueenside BoardInfo = 0x0800
-	HalfmoveCounterMask     BoardInfo = 0xffff0000
+	HalfmoveClockMask       BoardInfo = 0xffff0000
 )

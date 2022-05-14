@@ -12,31 +12,31 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 	case King:
 		if posX > 0 {
 			if posY > 0 && b.Fields[pos-(Width+1)]&color == PieceNone {
-				foundMove(pos - (Width + 1)) // left-top
+				foundMove(pos - (Width + 1)) // left-up
 			}
 			if b.Fields[pos-1]&color == PieceNone {
 				foundMove(pos - 1) // left
 			}
 			if posY < Height-1 && b.Fields[pos+(Width-1)]&color == PieceNone {
-				foundMove(pos + (Width - 1)) // left-bottom
+				foundMove(pos + (Width - 1)) // left-down
 			}
 		}
 		if posX < Width-1 {
 			if posY > 0 && b.Fields[pos-(Width-1)]&color == PieceNone {
-				foundMove(pos - (Width - 1)) // right-top
+				foundMove(pos - (Width - 1)) // right-up
 			}
 			if b.Fields[pos+1]&color == PieceNone {
 				foundMove(pos + 1) // right
 			}
 			if posY < Height-1 && b.Fields[pos+(Width+1)]&color == PieceNone {
-				foundMove(pos + (Width + 1)) // right-bottom
+				foundMove(pos + (Width + 1)) // right-down
 			}
 		}
 		if posY > 0 && b.Fields[pos-Width]&color == PieceNone {
-			foundMove(pos - Width) // top
+			foundMove(pos - Width) // up
 		}
 		if posY < Height-1 && b.Fields[pos+Width]&color == PieceNone {
-			foundMove(pos + Width) // bottom
+			foundMove(pos + Width) // down
 		}
 
 	case Queen:
@@ -70,7 +70,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// top
+		// up
 		for i := 1; i < Height; i++ {
 			if posY-i < 0 {
 				break
@@ -85,7 +85,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// bottom
+		// down
 		for i := 1; i < Height; i++ {
 			if posY+i >= Height {
 				break
@@ -100,7 +100,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// left-top
+		// left-up
 		for i := 1; i < Width; i++ {
 			if posX-i < 0 || posY-i < 0 {
 				break
@@ -115,7 +115,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// left-bottom
+		// left-down
 		for i := 1; i < Width; i++ {
 			if posX-i < 0 || posY+i >= Height {
 				break
@@ -130,7 +130,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// right-top
+		// right-up
 		for i := 1; i < Width; i++ {
 			if posX+i >= Width || posY-i < 0 {
 				break
@@ -145,7 +145,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// right-bottom
+		// right-down
 		for i := 1; i < Width; i++ {
 			if posX+i >= Width || posY+i >= Height {
 				break
@@ -192,7 +192,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// top
+		// up
 		for i := 1; i < Height; i++ {
 			if posY-i < 0 {
 				break
@@ -207,7 +207,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// bottom
+		// down
 		for i := 1; i < Height; i++ {
 			if posY+i >= Height {
 				break
@@ -224,7 +224,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 		}
 
 	case Bishop:
-		// left-top
+		// left-up
 		for i := 1; i < Width; i++ {
 			if posX-i < 0 || posY-i < 0 {
 				break
@@ -239,7 +239,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// left-bottom
+		// left-down
 		for i := 1; i < Width; i++ {
 			if posX-i < 0 || posY+i >= Height {
 				break
@@ -254,7 +254,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// right-top
+		// right-up
 		for i := 1; i < Width; i++ {
 			if posX+i >= Width || posY-i < 0 {
 				break
@@ -269,7 +269,7 @@ func scanMove(b *YacBoard, pos int, foundMove func(pos int)) {
 				break
 			}
 		}
-		// right-bottom
+		// right-down
 		for i := 1; i < Width; i++ {
 			if posX+i >= Width || posY+i >= Height {
 				break
@@ -493,6 +493,580 @@ func (board *YacBoard) GetMoves(moves *[256]Move) byte {
 		return getWhiteMoves(board, moves)
 	} else {
 		return getBlackMoves(board, moves)
+	}
+}
+
+func scanMoveStop(b *YacBoard, pos int, foundMove func(pos int) bool) bool {
+	piece := b.Fields[pos]
+	if piece == PieceNone {
+		return false
+	}
+	color := piece & Colors
+	posX := pos % Width
+	posY := pos / Width
+	switch piece & BasicPieces {
+	case King:
+		if posX > 0 {
+			if posY > 0 && b.Fields[pos-(Width+1)]&color == PieceNone {
+				if foundMove(pos - (Width + 1)) {
+					return true
+				}
+			}
+			if b.Fields[pos-1]&color == PieceNone {
+				if foundMove(pos - 1) {
+					return true
+				}
+			}
+			if posY < Height-1 && b.Fields[pos+(Width-1)]&color == PieceNone {
+				if foundMove(pos + (Width - 1)) {
+					return true
+				}
+			}
+		}
+		if posX < Width-1 {
+			if posY > 0 && b.Fields[pos-(Width-1)]&color == PieceNone {
+				if foundMove(pos - (Width - 1)) {
+					return true
+				}
+			}
+			if b.Fields[pos+1]&color == PieceNone {
+				if foundMove(pos + 1) {
+					return true
+				}
+			}
+			if posY < Height-1 && b.Fields[pos+(Width+1)]&color == PieceNone {
+				if foundMove(pos + (Width + 1)) {
+					return true
+				}
+			}
+		}
+		if posY > 0 && b.Fields[pos-Width]&color == PieceNone {
+			if foundMove(pos - Width) {
+				return true
+			}
+		}
+		if posY < Height-1 && b.Fields[pos+Width]&color == PieceNone {
+			if foundMove(pos + Width) {
+				return true
+			}
+		}
+
+	case Queen:
+		// left
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 {
+				break
+			}
+			p := pos - i
+			f := b.Fields[p]
+			if (f & color) != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width {
+				break
+			}
+			p := pos + i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// up
+		for i := 1; i < Height; i++ {
+			if posY-i < 0 {
+				break
+			}
+			p := pos - Width*i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// down
+		for i := 1; i < Height; i++ {
+			if posY+i >= Height {
+				break
+			}
+			p := pos + Width*i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// left-up
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 || posY-i < 0 {
+				break
+			}
+			p := pos - (Width*i + i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// left-down
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 || posY+i >= Height {
+				break
+			}
+			p := pos + (Width*i - i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right-up
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width || posY-i < 0 {
+				break
+			}
+			p := pos - (Width*i - i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right-down
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width || posY+i >= Height {
+				break
+			}
+			p := pos + (Width*i + i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+
+	case Rook:
+		// left
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 {
+				break
+			}
+			p := pos - i
+			f := b.Fields[p]
+			if (f & color) != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width {
+				break
+			}
+			p := pos + i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// up
+		for i := 1; i < Height; i++ {
+			if posY-i < 0 {
+				break
+			}
+			p := pos - Width*i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// down
+		for i := 1; i < Height; i++ {
+			if posY+i >= Height {
+				break
+			}
+			p := pos + Width*i
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+
+	case Bishop:
+		// left-up
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 || posY-i < 0 {
+				break
+			}
+			p := pos - (Width*i + i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// left-down
+		for i := 1; i < Width; i++ {
+			if posX-i < 0 || posY+i >= Height {
+				break
+			}
+			p := pos + (Width*i - i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right-up
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width || posY-i < 0 {
+				break
+			}
+			p := pos - (Width*i - i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+		// right-down
+		for i := 1; i < Width; i++ {
+			if posX+i >= Width || posY+i >= Height {
+				break
+			}
+			p := pos + (Width*i + i)
+			f := b.Fields[p]
+			if f&color != PieceNone {
+				break
+			}
+			if foundMove(p) {
+				return true
+			}
+			if f != PieceNone {
+				break
+			}
+		}
+
+	case Knight:
+		if posX > 0 {
+			if posY > 1 && b.Fields[pos-(Width*2+1)]&color == PieceNone {
+				if foundMove(pos - (Width*2 + 1)) {
+					return true
+				}
+			}
+			if posY < Height-2 && b.Fields[pos+(Width*2-1)]&color == PieceNone {
+				if foundMove(pos + (Width*2 - 1)) {
+					return true
+				}
+			}
+			if posX > 1 {
+				if posY > 0 && b.Fields[pos-(Width+2)]&color == PieceNone {
+					if foundMove(pos - (Width + 2)) {
+						return true
+					}
+				}
+				if posY < Height-1 && b.Fields[pos+(Width-2)]&color == PieceNone {
+					if foundMove(pos + (Width - 2)) {
+						return true
+					}
+				}
+			}
+		}
+		if posX < Width-1 {
+			if posY > 1 && b.Fields[pos-(Width*2-1)]&color == PieceNone {
+				if foundMove(pos - (Width*2 - 1)) {
+					return true
+				}
+			}
+			if posY < Height-2 && b.Fields[pos+(Width*2+1)]&color == PieceNone {
+				if foundMove(pos + (Width*2 + 1)) {
+					return true
+				}
+			}
+			if posX < Width-2 {
+				if posY > 0 && b.Fields[pos-(Width-2)]&color == PieceNone {
+					if foundMove(pos - (Width - 2)) {
+						return true
+					}
+				}
+				if posY < Height-1 && b.Fields[pos+(Width+2)]&color == PieceNone {
+					if foundMove(pos + (Width + 2)) {
+						return true
+					}
+				}
+			}
+		}
+
+	case Pawn:
+		if posY < 1 || posY >= Height-1 { // invalid pos?
+			break
+		}
+
+		if color == White { // white pawn goes up
+			if b.Fields[pos-Width] == PieceNone {
+				if foundMove(pos - Width) {
+					return true
+				}
+				if posY == Height-2 && b.Fields[pos-Width*2] == PieceNone {
+					if foundMove(pos - Width*2) {
+						return true
+					}
+				}
+			}
+			if posX > 0 && (b.EnPassantPos == pos-(Width+1) || b.Fields[pos-(Width+1)]&Colors == Black) { // capture left-top
+				if foundMove(pos - (Width + 1)) {
+					return true
+				}
+			}
+			if posX < Width-1 && (b.EnPassantPos == pos-(Width-1) || b.Fields[pos-(Width-1)]&Colors == Black) { // capture right-top
+				if foundMove(pos - (Width - 1)) {
+					return true
+				}
+			}
+		} else { // black pawn goes down
+			if b.Fields[pos+Width] == PieceNone {
+				if foundMove(pos + Width) {
+					return true
+				}
+				if posY == 1 && b.Fields[pos+Width*2] == PieceNone {
+					if foundMove(pos + Width*2) {
+						return true
+					}
+				}
+			}
+			if posX > 0 && (b.EnPassantPos == pos+(Width-1) || b.Fields[pos+(Width-1)]&Colors == White) {
+				if foundMove(pos + (Width - 1)) {
+					return true
+				}
+			}
+			if posX < Width-1 && (b.EnPassantPos == pos+(Width+1) || b.Fields[pos+(Width+1)]&Colors == White) {
+				if foundMove(pos + (Width + 1)) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func hasWhiteMoves(b *YacBoard) bool {
+	for pos := len(b.Fields) - 1; pos >= 0; pos-- {
+		piece := b.Fields[pos]
+		if piece&Colors != White { // wrong color / no piece?
+			continue
+		}
+
+		if piece == WhitePawn && pos < Width*2 {
+			// promotion move found?
+			if scanMoveStop(b, pos, func(movePos int) bool {
+				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: WhiteQueen}
+				return b.MoveCheck(move)
+			}) {
+				return true
+			}
+		} else {
+			if scanMoveStop(b, pos, func(movePos int) bool {
+				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				return b.MoveCheck(move)
+			}) {
+				return true
+			}
+
+			if pos == 60 && piece == WhiteKing {
+				if b.WhiteCanCastleQueenside &&
+					b.Fields[57] == PieceNone && b.Fields[58] == PieceNone && b.Fields[59] == PieceNone &&
+					!b.IsChecked(58, Black) && !b.IsChecked(59, Black) && !b.IsChecked(60, Black) {
+					return true
+				}
+				if b.WhiteCanCastleKingside &&
+					b.Fields[61] == PieceNone && b.Fields[62] == PieceNone &&
+					!b.IsChecked(60, Black) && !b.IsChecked(61, Black) && !b.IsChecked(62, Black) {
+					return true
+				}
+			} else if pos == 4 && piece == BlackKing {
+				if b.BlackCanCastleQueenside &&
+					b.Fields[1] == PieceNone && b.Fields[2] == PieceNone && b.Fields[3] == PieceNone &&
+					!b.IsChecked(2, White) && !b.IsChecked(3, White) && !b.IsChecked(4, White) {
+					return true
+				}
+				if b.BlackCanCastleKingside &&
+					b.Fields[5] == PieceNone && b.Fields[6] == PieceNone &&
+					!b.IsChecked(4, White) && !b.IsChecked(5, White) && !b.IsChecked(6, White) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func hasBlackMoves(b *YacBoard) bool {
+	for pos := 0; pos < len(b.Fields); pos++ {
+		piece := b.Fields[pos]
+		if piece&Colors != Black { // wrong color / no piece?
+			continue
+		}
+
+		if piece == BlackPawn && pos >= Height*Width-Width*2 {
+			// promotion move found?
+			if scanMoveStop(b, pos, func(movePos int) bool {
+				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: BlackQueen}
+				return b.MoveCheck(move)
+			}) {
+				return true
+			}
+		} else {
+			if scanMoveStop(b, pos, func(movePos int) bool {
+				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				return b.MoveCheck(move)
+			}) {
+				return true
+			}
+
+			if pos == 60 && piece == WhiteKing {
+				if b.WhiteCanCastleQueenside &&
+					b.Fields[57] == PieceNone && b.Fields[58] == PieceNone && b.Fields[59] == PieceNone &&
+					!b.IsChecked(58, Black) && !b.IsChecked(59, Black) && !b.IsChecked(60, Black) {
+					return true
+				}
+				if b.WhiteCanCastleKingside &&
+					b.Fields[61] == PieceNone && b.Fields[62] == PieceNone &&
+					!b.IsChecked(60, Black) && !b.IsChecked(61, Black) && !b.IsChecked(62, Black) {
+					return true
+				}
+			} else if pos == 4 && piece == BlackKing {
+				if b.BlackCanCastleQueenside &&
+					b.Fields[1] == PieceNone && b.Fields[2] == PieceNone && b.Fields[3] == PieceNone &&
+					!b.IsChecked(2, White) && !b.IsChecked(3, White) && !b.IsChecked(4, White) {
+					return true
+				}
+				if b.BlackCanCastleKingside &&
+					b.Fields[5] == PieceNone && b.Fields[6] == PieceNone &&
+					!b.IsChecked(4, White) && !b.IsChecked(5, White) && !b.IsChecked(6, White) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (board *YacBoard) HasMoves() bool {
+	if board.WhiteMove {
+		kp := board.WhiteKingPos
+		posX := kp % Width
+		board.Fields[kp] = PieceNone
+
+		if posX > 0 && board.Fields[kp-1]&White == PieceNone && !board.IsChecked(kp-1, Black) {
+			board.Fields[kp] = WhiteKing
+			return true
+		}
+
+		if posX < 7 && board.Fields[kp+1]&White == PieceNone && !board.IsChecked(kp+1, Black) {
+			board.Fields[kp] = WhiteKing
+			return true
+		}
+
+		board.Fields[kp] = WhiteKing
+		return hasWhiteMoves(board)
+	} else {
+		kp := board.BlackKingPos
+		posX := kp % Width
+		board.Fields[kp] = PieceNone
+
+		if posX > 0 && board.Fields[kp-1]&Black == PieceNone && !board.IsChecked(kp-1, White) {
+			board.Fields[kp] = BlackKing
+			return true
+		}
+
+		if posX < 7 && board.Fields[kp+1]&Black == PieceNone && !board.IsChecked(kp+1, White) {
+			board.Fields[kp] = BlackKing
+			return true
+		}
+		board.Fields[kp] = BlackKing
+		return hasBlackMoves(board)
 	}
 }
 
@@ -721,139 +1295,6 @@ func (board *YacBoard) InvertedMoveColor() Piece {
 	}
 }
 
-func (board *YacBoard) DoMove(move Move) bool {
-	piece := board.Fields[move.FromPos]
-
-	board.Fields[move.ToPos] = piece
-	board.Fields[move.FromPos] = PieceNone
-
-	if int(move.ToPos) == board.EnPassantPos && piece&Pawn != PieceNone { // "en passant"?
-		if board.WhiteMove {
-			board.Fields[move.ToPos+Width] = PieceNone
-		} else {
-			board.Fields[move.ToPos-Width] = PieceNone
-		}
-	}
-
-	if move.PromotionPiece != PieceNone {
-		board.Fields[move.ToPos] = move.PromotionPiece
-	}
-
-	if piece&King != PieceNone { // kingmove?
-		if piece == WhiteKing {
-			board.WhiteKingPos = int(move.ToPos)
-		} else {
-			board.BlackKingPos = int(move.ToPos)
-		}
-	}
-
-	// --- is the king is in check ---
-	{
-		var kingPos int
-		if board.WhiteMove {
-			kingPos = board.WhiteKingPos
-		} else {
-			kingPos = board.BlackKingPos
-		}
-		if kingPos == int(move.ToPos) && (int(move.ToPos)-int(move.FromPos) == 2 || int(move.ToPos)-int(move.FromPos) == -2) {
-			switch kingPos {
-			case 2:
-				board.Fields[0] = PieceNone
-				board.Fields[3] = BlackRook
-			case 6:
-				board.Fields[7] = PieceNone
-				board.Fields[5] = BlackRook
-			case 58:
-				board.Fields[56] = PieceNone
-				board.Fields[59] = WhiteRook
-			case 62:
-				board.Fields[63] = PieceNone
-				board.Fields[61] = WhiteRook
-			}
-		} else if board.IsChecked(kingPos, board.InvertedMoveColor()) {
-			board.Fields[move.ToPos] = move.CapturePiece
-			board.Fields[move.FromPos] = piece
-			if int(move.ToPos) == board.EnPassantPos && piece&Pawn != PieceNone { // "en passant" ?
-				if board.WhiteMove {
-					board.Fields[move.ToPos+Width] = BlackPawn
-				} else {
-					board.Fields[move.ToPos-Width] = WhitePawn
-				}
-			}
-			if piece&King != PieceNone { // wurde ein König gezogen?
-				if piece == WhiteKing {
-					board.WhiteKingPos = int(move.FromPos)
-				} else {
-					board.BlackKingPos = int(move.FromPos)
-				}
-			}
-			return false
-		}
-	}
-
-	board.EnPassantPos = -1
-	if piece&Pawn != PieceNone && (move.ToPos-move.FromPos == Width*2 || move.FromPos-move.ToPos == Width*2) {
-		board.EnPassantPos = (int(move.FromPos) + int(move.ToPos)) / 2
-		posX := board.EnPassantPos % Width
-		opPawn := false
-		if board.WhiteMove {
-			if posX > 0 && board.Fields[board.EnPassantPos-Width-1] == BlackPawn {
-				opPawn = true
-			}
-			if posX < Width-1 && board.Fields[board.EnPassantPos-Width+1] == BlackPawn {
-				opPawn = true
-			}
-		} else {
-			if posX > 0 && board.Fields[board.EnPassantPos+Width-1] == WhitePawn {
-				opPawn = true
-			}
-			if posX < Width-1 && board.Fields[board.EnPassantPos+Width+1] == WhitePawn {
-				opPawn = true
-			}
-		}
-		if !opPawn {
-			board.EnPassantPos = -1
-		}
-	}
-
-	switch move.FromPos {
-	case 0:
-		board.BlackCanCastleQueenside = false
-	case 4:
-		board.BlackCanCastleQueenside = false
-		board.BlackCanCastleKingside = false
-	case 7:
-		board.BlackCanCastleKingside = false
-	case 56:
-		board.WhiteCanCastleQueenside = false
-	case 60:
-		board.WhiteCanCastleQueenside = false
-		board.WhiteCanCastleKingside = false
-	case 63:
-		board.WhiteCanCastleKingside = false
-	}
-	switch move.ToPos {
-	case 0:
-		board.BlackCanCastleQueenside = false
-	case 7:
-		board.BlackCanCastleKingside = false
-	case 56:
-		board.WhiteCanCastleQueenside = false
-	case 63:
-		board.WhiteCanCastleKingside = false
-	}
-
-	board.WhiteMove = !board.WhiteMove
-	board.HalfmoveClock++
-	if piece == Pawn || move.CapturePiece != PieceNone {
-		board.HalfmoveClock = 0
-	}
-	if board.WhiteMove {
-		board.MoveNumber++
-	}
-	return true
-}
-
 func (board *YacBoard) MoveCheck(move Move) bool {
 	piece := board.Fields[move.FromPos]
 
@@ -926,4 +1367,170 @@ func (board *YacBoard) MoveCheck(move Move) bool {
 		}
 	}
 	return true
+}
+
+func (board *YacBoard) DoMove(move Move) {
+	piece := board.Fields[move.FromPos]
+
+	board.Fields[move.ToPos] = piece
+	board.Fields[move.FromPos] = PieceNone
+
+	if int(move.ToPos) == board.EnPassantPos && piece&Pawn != PieceNone { // "en passant"?
+		if board.WhiteMove {
+			board.Fields[move.ToPos+Width] = PieceNone
+		} else {
+			board.Fields[move.ToPos-Width] = PieceNone
+		}
+	}
+
+	if move.PromotionPiece != PieceNone { // pawn move with promotion?
+		board.Fields[move.ToPos] = move.PromotionPiece
+	}
+
+	if piece&King != PieceNone { // kingmove?
+		if piece == WhiteKing {
+			board.WhiteKingPos = int(move.ToPos)
+		} else {
+			board.BlackKingPos = int(move.ToPos)
+		}
+	}
+
+	// --- is the king is in check ---
+	{
+		var kingPos int
+		if board.WhiteMove {
+			kingPos = board.WhiteKingPos
+		} else {
+			kingPos = board.BlackKingPos
+		}
+		if kingPos == int(move.ToPos) && (int(move.ToPos)-int(move.FromPos) == 2 || int(move.ToPos)-int(move.FromPos) == -2) {
+			switch kingPos {
+			case 2:
+				board.Fields[0] = PieceNone
+				board.Fields[3] = BlackRook
+			case 6:
+				board.Fields[7] = PieceNone
+				board.Fields[5] = BlackRook
+			case 58:
+				board.Fields[56] = PieceNone
+				board.Fields[59] = WhiteRook
+			case 62:
+				board.Fields[63] = PieceNone
+				board.Fields[61] = WhiteRook
+			}
+		}
+	}
+
+	board.EnPassantPos = -1
+	if piece&Pawn != PieceNone && (move.ToPos-move.FromPos == Width*2 || move.FromPos-move.ToPos == Width*2) {
+		board.EnPassantPos = (int(move.FromPos) + int(move.ToPos)) / 2
+		posX := board.EnPassantPos % Width
+		opPawn := false
+		if board.WhiteMove {
+			if posX > 0 && board.Fields[board.EnPassantPos-Width-1] == BlackPawn {
+				opPawn = true
+			}
+			if posX < Width-1 && board.Fields[board.EnPassantPos-Width+1] == BlackPawn {
+				opPawn = true
+			}
+		} else {
+			if posX > 0 && board.Fields[board.EnPassantPos+Width-1] == WhitePawn {
+				opPawn = true
+			}
+			if posX < Width-1 && board.Fields[board.EnPassantPos+Width+1] == WhitePawn {
+				opPawn = true
+			}
+		}
+		if !opPawn {
+			board.EnPassantPos = -1
+		}
+	}
+
+	switch move.FromPos {
+	case 0:
+		board.BlackCanCastleQueenside = false
+	case 4:
+		board.BlackCanCastleQueenside = false
+		board.BlackCanCastleKingside = false
+	case 7:
+		board.BlackCanCastleKingside = false
+	case 56:
+		board.WhiteCanCastleQueenside = false
+	case 60:
+		board.WhiteCanCastleQueenside = false
+		board.WhiteCanCastleKingside = false
+	case 63:
+		board.WhiteCanCastleKingside = false
+	}
+	switch move.ToPos {
+	case 0:
+		board.BlackCanCastleQueenside = false
+	case 7:
+		board.BlackCanCastleKingside = false
+	case 56:
+		board.WhiteCanCastleQueenside = false
+	case 63:
+		board.WhiteCanCastleKingside = false
+	}
+
+	board.WhiteMove = !board.WhiteMove
+	board.HalfmoveClock++
+	if piece == Pawn || move.CapturePiece != PieceNone {
+		board.HalfmoveClock = 0
+	}
+	if board.WhiteMove {
+		board.MoveNumber++
+	}
+}
+
+func (board *YacBoard) DoMoveBackward(move Move, lastBoardInfos BoardInfo) {
+	piece := board.Fields[move.ToPos]
+	board.Fields[move.FromPos] = piece
+	board.Fields[move.ToPos] = move.CapturePiece
+
+	if move.PromotionPiece != PieceNone {
+		board.Fields[move.FromPos] = (piece & Colors) | Pawn
+	}
+
+	if piece&Pawn != PieceNone &&
+		move.FromPos%Width != move.ToPos%Width &&
+		move.CapturePiece == PieceNone {
+		if board.WhiteMove {
+			board.Fields[(uint)(lastBoardInfos&EnPassantMask)-Width] = WhitePawn
+		} else {
+			board.Fields[(uint)(lastBoardInfos&EnPassantMask)+Width] = BlackPawn
+		}
+	}
+
+	if piece&King != PieceNone {
+		if piece == WhiteKing {
+			board.WhiteKingPos = int(move.FromPos)
+		} else {
+			board.BlackKingPos = int(move.FromPos)
+		}
+
+		posXdif := int(move.FromPos%Width) - int(move.ToPos%Width)
+		if posXdif > 1 || posXdif < -1 {
+			switch move.ToPos {
+			case 2: // black O-O-O
+				board.Fields[0] = BlackRook
+				board.Fields[3] = PieceNone
+			case 6: // black O-O
+				board.Fields[7] = BlackRook
+				board.Fields[5] = PieceNone
+			case 58: // white O-O-O
+				board.Fields[56] = WhiteRook
+				board.Fields[59] = PieceNone
+			case 62: // white O-O
+				board.Fields[63] = WhiteRook
+				board.Fields[61] = PieceNone
+			}
+		}
+	}
+
+	if board.WhiteMove {
+		board.MoveNumber--
+	}
+	board.WhiteMove = !board.WhiteMove
+	board.SetBoardInfo(lastBoardInfos)
 }
