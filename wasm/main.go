@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/MaxKlaxxMiner/yacgui-web/YacBoard"
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"
 	"syscall/js"
@@ -34,22 +33,16 @@ func wsReader(c *websocket.Conn) {
 }
 
 func wsPinger(c *websocket.Conn) {
-	var board YacBoard.YacBoard
-	err := board.SetFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-	if err != nil {
-		panic(err)
-	}
-
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
-		err := wsjson.Write(ctx, c, "fen: "+board.GetFEN())
+		err := wsjson.Write(ctx, c, "wasm->ws.tick")
 		cancel()
 		if err != nil {
 			break
 		}
 
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second * 8)
 	}
 }
 
