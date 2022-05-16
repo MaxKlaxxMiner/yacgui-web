@@ -66,7 +66,7 @@ wg.loglog = function (line) {
 };
 // @ts-ignore
 var go = new Go();
-WebAssembly.instantiateStreaming(fetch("wasm/main.wasm"), go.importObject).then(function (result) {
+WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(function (result) {
     go.run(result.instance);
 });
 //# sourceMappingURL=index.js.map

@@ -110,7 +110,7 @@ func main() {
 	//ct := mime.TypeByExtension(".js")
 	//fmt.Printf("ct: %s\n", ct)
 
-	http.Handle("/", http.FileServer(http.Dir(".")))
+	http.Handle("/", http.FileServer(http.Dir("http-content/")))
 	http.HandleFunc("/ws", wsEndpoint)
 
 	fmt.Println("run server: localhost:9090")
