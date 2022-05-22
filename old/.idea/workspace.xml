@@ -5,41 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9168fddf-2df1-4340-9b36-8c31d21ca64f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/.idea/cboard.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/boardinfos.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/boardsize/boardsize.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/clear.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/crc64/crc64.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/domove.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/fastFEN.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/field.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/getFEN.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/hasmoves.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/ischecked.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/move.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/movegenerator.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/piece/fromchar.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/piece/tochar.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/pos/pos.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/string.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../modules/cboard/yacboard.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/BoardInfo.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/BoardTools.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/Crc64/Crc64.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/Crc64/YacBoard.go" beforeDir="false" afterPath="$PROJECT_DIR$/../modules/cboard/checksum.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/FEN.go" beforeDir="false" afterPath="$PROJECT_DIR$/../modules/cboard/setFEN.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/Move.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/MoveGenerator.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/Piece.go" beforeDir="false" afterPath="$PROJECT_DIR$/../modules/cboard/piece/piece.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YacBoard/YacBoard.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +49,6 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/Users/Max/Desktop/prog/Spiele/Chess/Go/yacgui-web/old",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
