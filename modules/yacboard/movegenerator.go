@@ -14,7 +14,7 @@ func (board *YacBoard) invertedMoveColor() piece.Piece {
 	}
 }
 
-func (board *YacBoard) moveCheck(move Move) bool {
+func (board *YacBoard) simpleMoveCheck(move Move) bool {
 	p := board.Fields[move.FromPos]
 
 	board.Fields[move.ToPos] = p
@@ -86,6 +86,15 @@ func (board *YacBoard) moveCheck(move Move) bool {
 		}
 	}
 	return true
+}
+
+func (board *YacBoard) MoveCheck(move Move) bool {
+	for _, m := range board.GetMoves() {
+		if m == move {
+			return true
+		}
+	}
+	return false
 }
 
 func scanMove(board *YacBoard, pos Pos, foundMove func(pos Pos)) {
@@ -454,7 +463,7 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 			// promotion move found?
 			scanMove(b, Pos(pos), func(movePos Pos) {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.WhiteQueen}
-				if b.moveCheck(move) {
+				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
 					move.PromotionPiece = piece.WhiteRook
@@ -471,7 +480,7 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 		} else {
 			scanMove(b, Pos(pos), func(movePos Pos) {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
-				if b.moveCheck(move) {
+				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
 				}
@@ -521,7 +530,7 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 			// promotion move found?
 			scanMove(b, Pos(pos), func(movePos Pos) {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.BlackQueen}
-				if b.moveCheck(move) {
+				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
 					move.PromotionPiece = piece.BlackRook
@@ -538,7 +547,7 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 		} else {
 			scanMove(b, Pos(pos), func(movePos Pos) {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
-				if b.moveCheck(move) {
+				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
 				}

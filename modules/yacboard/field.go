@@ -16,7 +16,6 @@ func (board *YacBoard) GetField(pos pos.Pos) piece.Piece {
 func (board *YacBoard) SetField(pos pos.Pos, p piece.Piece) {
 	if uint(pos) >= boardsize.FieldCount {
 		panic("argument out of range")
-		return
 	}
 	board.Fields[pos] = p
 

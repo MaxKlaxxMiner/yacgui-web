@@ -112,7 +112,7 @@ func (board *YacBoard) DoMove(move Move) {
 
 	board.WhiteMove = !board.WhiteMove
 	board.HalfmoveClock++
-	if p == piece.Pawn || move.CapturePiece != piece.None {
+	if p&piece.Pawn == piece.Pawn || move.CapturePiece != piece.None {
 		board.HalfmoveClock = 0
 	}
 	if board.WhiteMove {

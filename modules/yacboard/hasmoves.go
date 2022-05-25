@@ -452,14 +452,14 @@ func hasWhiteMoves(b *YacBoard) bool {
 			// promotion move found?
 			if scanMoveStop(b, Pos(pos), func(movePos Pos) bool {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.WhiteQueen}
-				return b.moveCheck(move)
+				return b.simpleMoveCheck(move)
 			}) {
 				return true
 			}
 		} else {
 			if scanMoveStop(b, Pos(pos), func(movePos Pos) bool {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
-				return b.moveCheck(move)
+				return b.simpleMoveCheck(move)
 			}) {
 				return true
 			}
@@ -503,14 +503,14 @@ func hasBlackMoves(b *YacBoard) bool {
 			// promotion move found?
 			if scanMoveStop(b, Pos(pos), func(movePos Pos) bool {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.BlackQueen}
-				return b.moveCheck(move)
+				return b.simpleMoveCheck(move)
 			}) {
 				return true
 			}
 		} else {
 			if scanMoveStop(b, Pos(pos), func(movePos Pos) bool {
 				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
-				return b.moveCheck(move)
+				return b.simpleMoveCheck(move)
 			}) {
 				return true
 			}

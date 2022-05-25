@@ -20,7 +20,7 @@ func (m Move) IsValid(optionalBoard *YacBoard) bool {
 	if optionalBoard == nil {
 		return true
 	}
-	return optionalBoard.moveCheck(m)
+	return optionalBoard.MoveCheck(m)
 }
 
 func (m Move) String() string {
@@ -29,6 +29,9 @@ func (m Move) String() string {
 	}
 
 	result := fmt.Sprintf("%s-%s", pos.Pos(m.FromPos), pos.Pos(m.ToPos))
+	if m.CapturePiece != piece.None {
+		result = fmt.Sprintf("%sx%s", pos.Pos(m.FromPos), pos.Pos(m.ToPos))
+	}
 
 	if m.PromotionPiece != piece.None {
 		result += "->" + m.PromotionPiece.String()
