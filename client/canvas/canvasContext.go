@@ -63,3 +63,15 @@ func (ctx *CanvasContext) Clear(colorCode string) {
 	ctx.FillRect(0, 0, ctx.Width, ctx.Height)
 	ctx.SetFillStyle("#fff")
 }
+
+func (ctx *CanvasContext) Save() {
+	ctx.Call("save")
+}
+
+func (ctx *CanvasContext) Restore() {
+	ctx.Call("restore")
+}
+
+func (ctx *CanvasContext) ResetTransform() {
+	ctx.Call("resetTransform")
+}
