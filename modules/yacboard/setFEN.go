@@ -20,9 +20,9 @@ func (board *YacBoard) SetFEN(fen string) error {
 	splits := strings.Split(strings.TrimSpace(fen), " ")
 	if len(splits) != 6 {
 		if len(splits) < 6 {
-			return errors.New("invalid FEN: too short")
+			return errors.New("invalid FEN: too few elements (" + strconv.Itoa(len(splits)) + " < 6)")
 		} else {
-			return errors.New("invalid FEN: too long")
+			return errors.New("invalid FEN: too many elements (" + strconv.Itoa(len(splits)) + " > 6)")
 		}
 	}
 	lines := strings.Split(splits[0], "/")
@@ -43,7 +43,9 @@ func (board *YacBoard) SetFEN(fen string) error {
 				x += int(c - '0')
 				continue
 			}
-			board.SetField(pos.FromXY(x, y), p)
+			if x < boardsize.Width {
+				board.SetField(pos.FromXY(x, y), p)
+			}
 			x++
 		}
 
@@ -118,8 +120,26 @@ func (board *YacBoard) SetFEN(fen string) error {
 
 	// --- 4 / 6 - "en passant" ---
 	board.EnPassantPos = pos.FromChars(splits[3])
+	if board.EnPassantPos > 0 {
+		if board.WhiteMove {
+			if board.EnPassantPos < pos.FromChars("a6") || board.EnPassantPos > pos.FromChars("h6") {
+				board.EnPassantPos = -1
+			}
+			if board.EnPassantPos > 0 && board.Fields[board.EnPassantPos+boardsize.Width] != piece.BlackPawn {
+				board.EnPassantPos = -1
+			}
+		} else {
+			if board.EnPassantPos < pos.FromChars("a3") || board.EnPassantPos > pos.FromChars("h3") {
+				board.EnPassantPos = -1
+			}
+			if board.EnPassantPos > 0 && board.Fields[board.EnPassantPos-boardsize.Width] != piece.WhitePawn {
+				board.EnPassantPos = -1
+			}
+		}
+	}
+
 	if board.EnPassantPos == -1 && splits[3] != "-" {
-		return errors.New(fmt.Sprintf("invalid FEN: unknown en passant value: \"%v\"", splits[3]))
+		return errors.New(fmt.Sprintf("invalid FEN: invalid en passant value: \"%v\"", splits[3]))
 	}
 
 	// --- 5 / 6 - read halfmove clock ---
