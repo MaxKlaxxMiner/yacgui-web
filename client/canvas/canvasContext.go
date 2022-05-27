@@ -38,6 +38,10 @@ func (ctx *CanvasContext) Stroke() {
 	ctx.Call("stroke")
 }
 
+func (ctx *CanvasContext) StrokePath(path js.Value) {
+	ctx.Call("stroke", path)
+}
+
 func (ctx *CanvasContext) MoveTo(x, y int) {
 	ctx.Call("moveTo", x, y)
 }
@@ -52,6 +56,10 @@ func (ctx *CanvasContext) LineTo(x, y int) {
 
 func (ctx *CanvasContext) LineToF(x, y float64) {
 	ctx.Call("lineTo", x, y)
+}
+
+func (ctx *CanvasContext) FillPath(path js.Value) {
+	ctx.Call("fill", path)
 }
 
 func (ctx *CanvasContext) FillRect(x, y, w, h int) {
@@ -74,4 +82,24 @@ func (ctx *CanvasContext) Restore() {
 
 func (ctx *CanvasContext) ResetTransform() {
 	ctx.Call("resetTransform")
+}
+
+func (ctx *CanvasContext) Translate(x, y int) {
+	ctx.Call("translate", x, y)
+}
+
+func (ctx *CanvasContext) TranslateF(x, y float64) {
+	ctx.Call("translate", x, y)
+}
+
+func (ctx *CanvasContext) Rotate(rad float64) {
+	ctx.Call("rotate", rad)
+}
+
+func (ctx *CanvasContext) Scale(x, y int) {
+	ctx.Call("scale", x, y)
+}
+
+func (ctx *CanvasContext) ScaleF(x, y float64) {
+	ctx.Call("scale", x, y)
 }

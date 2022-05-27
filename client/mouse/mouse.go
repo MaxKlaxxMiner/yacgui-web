@@ -1,7 +1,6 @@
 package mouse
 
 import (
-	"fmt"
 	"syscall/js"
 )
 
@@ -27,7 +26,6 @@ func New() *Mouse {
 		mouse.X = m.Get("x").Int()
 		mouse.Y = m.Get("y").Int()
 		mouse.Buttons = m.Get("buttons").Int()
-		fmt.Println(mouse.X, mouse.Y, mouse.Buttons)
 		if mouse.Buttons&8|16 != 0 { // supress browser back/forward
 			args[0].Call("preventDefault")
 		}
