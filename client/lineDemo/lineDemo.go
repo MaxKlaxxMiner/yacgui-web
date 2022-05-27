@@ -3,7 +3,6 @@ package lineDemo
 import (
 	"client/canvas"
 	"client/keys"
-	"fmt"
 	"math"
 	"math/rand"
 	"time"
@@ -85,8 +84,7 @@ func (demo *LineDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
 		demo.gra -= 720
 	}
 
-	fr := int(math.Sin(pih*grad)*127) + 127
-	fb := 127
+	color := (int(math.Sin(pih*grad)*127)+127)<<16 | 127
 
 	sw1 := pih * grad
 	sw2 := pih2 * demo.gra
@@ -106,13 +104,7 @@ func (demo *LineDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
 			x1 := math.Sin(sw1+radStep*float64(x)+sw2)*widthK + widthH
 			y1 := -math.Cos(sw1+radStep*float64(x)+(sw1*eg))*heightK + heightH
 
-			fg := rnd.Int63() & 0xff
-
-			c.BeginPath()
-			c.SetStrokeStyle(fmt.Sprintf("rgb(%d,%d,%d)", fr, fg, fb))
-			c.MoveToF(x1, y1)
-			c.LineToF(x2, y2)
-			c.Stroke()
+			c.LineF(x1, y1, x2, y2, color|int(rnd.Int63()&0xff00))
 		}
 	}
 }

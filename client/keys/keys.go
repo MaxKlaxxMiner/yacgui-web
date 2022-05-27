@@ -1,7 +1,6 @@
 package keys
 
 import (
-	"fmt"
 	"syscall/js"
 )
 
@@ -17,7 +16,6 @@ func New() *Keys {
 		code := args[0].Get("code").String()
 		keys.pressed[code] = true
 		keys.LastPressed = code
-		js.Global().Get("document").Set("title", fmt.Sprintf("key: %s", code))
 		//args[0].Call("preventDefault")
 		return nil
 	}))
