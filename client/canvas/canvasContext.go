@@ -34,6 +34,10 @@ func (ctx *CanvasContext) SetLineWidth(width float64) {
 	ctx.Set("lineWidth", width)
 }
 
+func (ctx *CanvasContext) SetMiterLimit(limit float64) {
+	ctx.Set("miterLimit", limit)
+}
+
 func (ctx *CanvasContext) BeginPath() {
 	ctx.Call("beginPath")
 }

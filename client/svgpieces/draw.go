@@ -58,5 +58,27 @@ func Draw(c *canvas.CanvasContext, p piece.Piece) {
 		c.SetLineWidth(1)
 		c.SetStrokeStyle("#ddd")
 		c.StrokePath(rook2)
+	case piece.WhiteQueen:
+		c.SetMiterLimit(1)
+		c.FillPath(queen)
+		c.StrokePath(queen)
+	case piece.BlackQueen:
+		c.FillPath(queen)
+		c.StrokePath(queen)
+		c.StrokePath(queen2)
+		c.SetStrokeStyle("#ddd")
+		c.StrokePath(queen3)
+	case piece.WhiteKing:
+		c.FillPath(king)
+		c.StrokePath(king)
+		c.FillPath(king2)
+		c.StrokePath(king2)
+	case piece.BlackKing:
+		c.FillPath(king)
+		c.StrokePath(king)
+		c.FillPath(king2)
+		c.StrokePath(king2)
+		c.SetStrokeStyle("#ddd")
+		c.StrokePath(king3)
 	}
 }
