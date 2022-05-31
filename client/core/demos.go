@@ -6,9 +6,8 @@ import (
 	"client/lineDemo"
 	"client/mouse"
 	"client/svgpieces"
-	"math"
+	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
 	"syscall/js"
-	"time"
 )
 
 type DemoInterface interface {
@@ -34,8 +33,6 @@ func RunLineDemo() {
 type MouseDemo struct {
 }
 
-var whitePawnPath = js.Global().Get("Path2D").New(svgpieces.WhitePawn)
-
 func (demo *MouseDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
 	can.Clear("#888")
 	can.Save()
@@ -43,14 +40,22 @@ func (demo *MouseDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
 	can.ResetTransform()
 	can.Translate(ms.X, ms.Y)
 	can.Scale(3, 3)
-	can.Rotate(math.Pi / -1800.0 * float64(time.Now().UnixMilli()%3600))
 	can.TranslateF(-45.0/2, -45.0/2)
-
-	can.SetFillStyle("#fff")
-	can.FillPath(whitePawnPath)
-
-	can.SetStrokeStyle("#000")
-	can.StrokePath(whitePawnPath)
+	svgpieces.Draw(c, piece.WhitePawn)
+	can.Translate(0, 45)
+	svgpieces.Draw(c, piece.BlackPawn)
+	can.Translate(45, -45)
+	svgpieces.Draw(c, piece.WhiteBishop)
+	can.Translate(0, 45)
+	svgpieces.Draw(c, piece.BlackBishop)
+	can.Translate(45, -45)
+	svgpieces.Draw(c, piece.WhiteKnight)
+	can.Translate(0, 45)
+	svgpieces.Draw(c, piece.BlackKnight)
+	can.Translate(45, -45)
+	svgpieces.Draw(c, piece.WhiteRook)
+	can.Translate(0, 45)
+	svgpieces.Draw(c, piece.BlackRook)
 
 	can.Restore()
 }

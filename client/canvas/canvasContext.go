@@ -26,6 +26,10 @@ func (ctx *CanvasContext) SetStrokeStyle(style string) {
 	ctx.Set("strokeStyle", style)
 }
 
+func (ctx *CanvasContext) SetLineCap(cap string) {
+	ctx.Set("lineCap", cap)
+}
+
 func (ctx *CanvasContext) SetLineWidth(width float64) {
 	ctx.Set("lineWidth", width)
 }
