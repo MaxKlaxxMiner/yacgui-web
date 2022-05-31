@@ -2,11 +2,6 @@ package canvas
 
 import "syscall/js"
 
-type SizeXY struct {
-	Width  int
-	Height int
-}
-
 func GetWindowSize() SizeXY {
 	w := js.Global()
 
