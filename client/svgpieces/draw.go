@@ -1,7 +1,7 @@
 package svgpieces
 
 import (
-	"client/canvas"
+	"client/jscore/canvas"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
 	"syscall/js"
 )

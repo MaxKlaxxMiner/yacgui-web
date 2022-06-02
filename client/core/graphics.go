@@ -1,7 +1,7 @@
 package core
 
 import (
-	"client/canvas"
+	"client/jscore/canvas"
 	"syscall/js"
 )
 

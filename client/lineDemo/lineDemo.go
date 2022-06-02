@@ -1,8 +1,8 @@
 package lineDemo
 
 import (
-	"client/canvas"
-	"client/keys"
+	"client/jscore/canvas"
+	"client/jscore/keys"
 	"math"
 	"math/rand"
 	"time"

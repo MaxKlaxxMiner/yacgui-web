@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard"
+	"strconv"
 	"syscall/js"
 )
 
@@ -24,4 +25,5 @@ func InitWg() {
 	wg := js.Global().Get("window").Get("wg")
 	wg.Set("test", js.FuncOf(WgTest))
 	wg.Set("perfTest", js.FuncOf(WgPerfTest))
+	fmt.Println(strconv.IntSize)
 }

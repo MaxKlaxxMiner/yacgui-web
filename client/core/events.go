@@ -1,8 +1,8 @@
 package core
 
 import (
-	"client/keys"
-	"client/mouse"
+	"client/jscore/keys"
+	"client/jscore/mouse"
 )
 
 var ks = keys.New()

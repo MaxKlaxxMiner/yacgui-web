@@ -1,11 +1,11 @@
 package core
 
 import (
-	"client/canvas"
 	"client/core/ease"
-	"client/keys"
+	"client/jscore/canvas"
+	"client/jscore/keys"
+	"client/jscore/mouse"
 	"client/lineDemo"
-	"client/mouse"
 	"client/svgpieces"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
