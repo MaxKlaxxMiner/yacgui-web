@@ -97,372 +97,19 @@ func (board *YacBoard) MoveCheck(move Move) bool {
 	return false
 }
 
-func scanMove(board *YacBoard, pos Pos, foundMove func(pos Pos)) {
-	field := board.Fields[pos]
-	if field == piece.None {
-		return
-	}
-	color := field & piece.Colors
-	posX := int(pos % Width)
-	posY := int(pos / Width)
-	switch field & piece.BasicMask {
-	case piece.King:
-		if posX > 0 {
-			if posY > 0 && board.Fields[pos-(Width+1)]&color == piece.None {
-				foundMove(pos - (Width + 1)) // left-up
-			}
-			if board.Fields[pos-1]&color == piece.None {
-				foundMove(pos - 1) // left
-			}
-			if posY < Height-1 && board.Fields[pos+(Width-1)]&color == piece.None {
-				foundMove(pos + (Width - 1)) // left-down
-			}
-		}
-		if posX < Width-1 {
-			if posY > 0 && board.Fields[pos-(Width-1)]&color == piece.None {
-				foundMove(pos - (Width - 1)) // right-up
-			}
-			if board.Fields[pos+1]&color == piece.None {
-				foundMove(pos + 1) // right
-			}
-			if posY < Height-1 && board.Fields[pos+(Width+1)]&color == piece.None {
-				foundMove(pos + (Width + 1)) // right-down
-			}
-		}
-		if posY > 0 && board.Fields[pos-Width]&color == piece.None {
-			foundMove(pos - Width) // up
-		}
-		if posY < Height-1 && board.Fields[pos+Width]&color == piece.None {
-			foundMove(pos + Width) // down
-		}
-
-	case piece.Queen:
-		// left
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 {
-				break
-			}
-			p := pos - Pos(i)
-			f := board.Fields[p]
-			if (f & color) != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width {
-				break
-			}
-			p := pos + Pos(i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// up
-		for i := 1; i < Height; i++ {
-			if posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// down
-		for i := 1; i < Height; i++ {
-			if posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// left-up
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 || posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i+i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// left-down
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 || posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i-i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right-up
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width || posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i-i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right-down
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width || posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i+i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-
-	case piece.Rook:
-		// left
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 {
-				break
-			}
-			p := pos - Pos(i)
-			f := board.Fields[p]
-			if (f & color) != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width {
-				break
-			}
-			p := pos + Pos(i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// up
-		for i := 1; i < Height; i++ {
-			if posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// down
-		for i := 1; i < Height; i++ {
-			if posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-
-	case piece.Bishop:
-		// left-up
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 || posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i+i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// left-down
-		for i := 1; i < Width; i++ {
-			if posX-i < 0 || posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i-i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right-up
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width || posY-i < 0 {
-				break
-			}
-			p := pos - Pos(Width*i-i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-		// right-down
-		for i := 1; i < Width; i++ {
-			if posX+i >= Width || posY+i >= Height {
-				break
-			}
-			p := pos + Pos(Width*i+i)
-			f := board.Fields[p]
-			if f&color != piece.None {
-				break
-			}
-			foundMove(p)
-			if f != piece.None {
-				break
-			}
-		}
-
-	case piece.Knight:
-		if posX > 0 {
-			if posY > 1 && board.Fields[pos-(Width*2+1)]&color == piece.None {
-				foundMove(pos - (Width*2 + 1)) // -1, -2
-			}
-			if posY < Height-2 && board.Fields[pos+(Width*2-1)]&color == piece.None {
-				foundMove(pos + (Width*2 - 1)) // -1, +2
-			}
-			if posX > 1 {
-				if posY > 0 && board.Fields[pos-(Width+2)]&color == piece.None {
-					foundMove(pos - (Width + 2)) // -2, -1
-				}
-				if posY < Height-1 && board.Fields[pos+(Width-2)]&color == piece.None {
-					foundMove(pos + (Width - 2)) // -2, +1
-				}
-			}
-		}
-		if posX < Width-1 {
-			if posY > 1 && board.Fields[pos-(Width*2-1)]&color == piece.None {
-				foundMove(pos - (Width*2 - 1)) // +1, -2
-			}
-			if posY < Height-2 && board.Fields[pos+(Width*2+1)]&color == piece.None {
-				foundMove(pos + (Width*2 + 1)) // +1, +2
-			}
-			if posX < Width-2 {
-				if posY > 0 && board.Fields[pos-(Width-2)]&color == piece.None {
-					foundMove(pos - (Width - 2)) // +2, +1
-				}
-				if posY < Height-1 && board.Fields[pos+(Width+2)]&color == piece.None {
-					foundMove(pos + (Width + 2)) // +2, -1
-				}
-			}
-		}
-
-	case piece.Pawn:
-		if posY < 1 || posY >= Height-1 { // invalid pos?
-			break
-		}
-
-		if color == piece.White { // white pawn goes up
-			if board.Fields[pos-Width] == piece.None {
-				foundMove(pos - Width)
-				if posY == Height-2 && board.Fields[pos-Width*2] == piece.None {
-					foundMove(pos - Width*2)
-				}
-			}
-			if posX > 0 && (board.EnPassantPos == pos-(Width+1) || board.Fields[pos-(Width+1)]&piece.Colors == piece.Black) { // capture left-top
-				foundMove(pos - (Width + 1))
-			}
-			if posX < Width-1 && (board.EnPassantPos == pos-(Width-1) || board.Fields[pos-(Width-1)]&piece.Colors == piece.Black) { // capture right-top
-				foundMove(pos - (Width - 1))
-			}
-		} else { // black pawn goes down
-			if board.Fields[pos+Width] == piece.None {
-				foundMove(pos + Width)
-				if posY == 1 && board.Fields[pos+Width*2] == piece.None {
-					foundMove(pos + Width*2)
-				}
-			}
-			if posX > 0 && (board.EnPassantPos == pos+(Width-1) || board.Fields[pos+(Width-1)]&piece.Colors == piece.White) {
-				foundMove(pos + (Width - 1))
-			}
-			if posX < Width-1 && (board.EnPassantPos == pos+(Width+1) || board.Fields[pos+(Width+1)]&piece.Colors == piece.White) {
-				foundMove(pos + (Width + 1))
-			}
-		}
-	}
-}
-
 func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 	var mi byte = 0
 	for pos := len(b.Fields) - 1; pos >= 0; pos-- {
-		p := b.Fields[pos]
-		if p&piece.Colors != piece.White { // wrong color / no p?
+		field := b.Fields[pos]
+		if field&piece.Colors != piece.White { // wrong color / no p?
 			continue
 		}
+		posX := pos % Width
+		posY := pos / Width
 
-		if p == piece.WhitePawn && pos < Width*2 {
-			// promotion move found?
-			scanMove(b, Pos(pos), func(movePos Pos) {
-				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.WhiteQueen}
+		if field == piece.WhitePawn && pos < Width*2 {
+			if b.Fields[pos-Width] == piece.None {
+				move := Move{FromPos: byte(pos), ToPos: byte(pos - Width), CapturePiece: b.Fields[pos-Width], PromotionPiece: piece.WhiteQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -476,41 +123,547 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					mv[mi] = move
 					mi++
 				}
-			})
-		} else {
-			scanMove(b, Pos(pos), func(movePos Pos) {
-				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+			}
+			if posX > 0 && b.Fields[pos-(Width+1)]&piece.Colors == piece.Black { // capture left-top
+				move := Move{FromPos: byte(pos), ToPos: byte(pos - (Width + 1)), CapturePiece: b.Fields[pos-(Width+1)], PromotionPiece: piece.WhiteQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
+					move.PromotionPiece = piece.WhiteRook
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.WhiteBishop
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.WhiteKnight
+					mv[mi] = move
+					mi++
 				}
-			})
+			}
+			if posX < Width-1 && b.Fields[pos-(Width-1)]&piece.Colors == piece.Black { // capture right-top
+				move := Move{FromPos: byte(pos), ToPos: byte(pos - (Width - 1)), CapturePiece: b.Fields[pos-(Width-1)], PromotionPiece: piece.WhiteQueen}
+				if b.simpleMoveCheck(move) {
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.WhiteRook
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.WhiteBishop
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.WhiteKnight
+					mv[mi] = move
+					mi++
+				}
+			}
+		} else {
+			switch field {
+			case piece.WhiteKing:
+				var movePos int
+				if posX > 0 {
+					movePos = pos - (Width + 1) // left-up
+					if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos - 1 // left
+					if b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width - 1) // left-down
+					if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				if posX < Width-1 {
+					movePos = pos - (Width - 1) // right-up
+					if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + 1 // right
+					if b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width + 1) // right-down
+					if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				movePos = pos - Width // up
+				if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				movePos = pos + Width // down
+				if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				if pos == 60 {
+					if b.WhiteCanCastleQueenside &&
+						b.Fields[57] == piece.None && b.Fields[58] == piece.None && b.Fields[59] == piece.None &&
+						!b.isChecked(58, piece.Black) && !b.isChecked(59, piece.Black) && !b.isChecked(60, piece.Black) {
+						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
+						mi++
+					}
+					if b.WhiteCanCastleKingside &&
+						b.Fields[61] == piece.None && b.Fields[62] == piece.None &&
+						!b.isChecked(60, piece.Black) && !b.isChecked(61, piece.Black) && !b.isChecked(62, piece.Black) {
+						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
+						mi++
+					}
+				}
 
-			if pos == 60 && p == piece.WhiteKing {
-				if b.WhiteCanCastleQueenside &&
-					b.Fields[57] == piece.None && b.Fields[58] == piece.None && b.Fields[59] == piece.None &&
-					!b.isChecked(58, piece.Black) && !b.isChecked(59, piece.Black) && !b.isChecked(60, piece.Black) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
-					mi++
+			case piece.WhiteQueen:
+				// left
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 {
+						break
+					}
+					p := pos - i
+					f := b.Fields[p]
+					if (f & piece.White) != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-				if b.WhiteCanCastleKingside &&
-					b.Fields[61] == piece.None && b.Fields[62] == piece.None &&
-					!b.isChecked(60, piece.Black) && !b.isChecked(61, piece.Black) && !b.isChecked(62, piece.Black) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
-					mi++
+				// right
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width {
+						break
+					}
+					p := pos + i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-			} else if pos == 4 && p == piece.BlackKing {
-				if b.BlackCanCastleQueenside &&
-					b.Fields[1] == piece.None && b.Fields[2] == piece.None && b.Fields[3] == piece.None &&
-					!b.isChecked(2, piece.White) && !b.isChecked(3, piece.White) && !b.isChecked(4, piece.White) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
-					mi++
+				// up
+				for i := 1; i < Height; i++ {
+					if posY-i < 0 {
+						break
+					}
+					p := pos - Width*i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-				if b.BlackCanCastleKingside &&
-					b.Fields[5] == piece.None && b.Fields[6] == piece.None &&
-					!b.isChecked(4, piece.White) && !b.isChecked(5, piece.White) && !b.isChecked(6, piece.White) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
-					mi++
+				// down
+				for i := 1; i < Height; i++ {
+					if posY+i >= Height {
+						break
+					}
+					p := pos + Width*i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-up
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-down
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-up
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-down
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.WhiteRook:
+				// left
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 {
+						break
+					}
+					p := pos - i
+					f := b.Fields[p]
+					if (f & piece.White) != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width {
+						break
+					}
+					p := pos + i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// up
+				for i := 1; i < Height; i++ {
+					if posY-i < 0 {
+						break
+					}
+					p := pos - Width*i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// down
+				for i := 1; i < Height; i++ {
+					if posY+i >= Height {
+						break
+					}
+					p := pos + Width*i
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.WhiteBishop:
+				// left-up
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-down
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-up
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-down
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.White != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.WhiteKnight:
+				var movePos int
+				if posX > 0 {
+					movePos = pos - (Width*2 + 1) // -1, -2
+					if posY > 1 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width*2 - 1) // -1, +2
+					if posY < Height-2 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					if posX > 1 {
+						movePos = pos - (Width + 2) // -2, -1
+						if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+						movePos = pos + (Width - 2) // -2, +1
+						if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+					}
+				}
+				if posX < Width-1 {
+					movePos = pos - (Width*2 - 1) // +1, -2
+					if posY > 1 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width*2 + 1) // +1, +2
+					if posY < Height-2 && b.Fields[movePos]&piece.White == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					if posX < Width-2 {
+						movePos = pos - (Width - 2) // +2, +1
+						if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+						movePos = pos + (Width + 2) // +2, -1
+						if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+					}
+				}
+
+			case piece.WhitePawn:
+				if posY < 1 || posY >= Height-1 { // invalid pos?
+					break
+				}
+				var movePos int
+				movePos = pos - Width
+				if b.Fields[movePos] == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					movePos = pos - Width*2
+					if posY == Height-2 && b.Fields[movePos] == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				movePos = pos - (Width + 1)
+				if posX > 0 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.Black) { // capture left-top
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				movePos = pos - (Width - 1)
+				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.Black) { // capture right-top
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
 				}
 			}
 		}
@@ -521,15 +674,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 	var mi byte = 0
 	for pos := 0; pos < len(b.Fields); pos++ {
-		p := b.Fields[pos]
-		if p&piece.Colors != piece.Black { // wrong color / no p?
+		field := b.Fields[pos]
+		if field&piece.Colors != piece.Black { // wrong color / no p?
 			continue
 		}
+		posX := pos % Width
+		posY := pos / Width
 
-		if p == piece.BlackPawn && pos >= Height*Width-Width*2 {
-			// promotion move found?
-			scanMove(b, Pos(pos), func(movePos Pos) {
-				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos], PromotionPiece: piece.BlackQueen}
+		if field == piece.BlackPawn && pos >= Height*Width-Width*2 {
+			if b.Fields[pos+Width] == piece.None {
+				move := Move{FromPos: byte(pos), ToPos: byte(pos + Width), CapturePiece: b.Fields[pos+Width], PromotionPiece: piece.BlackQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -543,41 +697,547 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					mv[mi] = move
 					mi++
 				}
-			})
-		} else {
-			scanMove(b, Pos(pos), func(movePos Pos) {
-				move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+			}
+			if posX > 0 && b.Fields[pos+(Width-1)]&piece.Colors == piece.White { // capture left-bottom
+				move := Move{FromPos: byte(pos), ToPos: byte(pos + (Width - 1)), CapturePiece: b.Fields[pos+(Width-1)], PromotionPiece: piece.BlackQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
+					move.PromotionPiece = piece.BlackRook
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.BlackBishop
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.BlackKnight
+					mv[mi] = move
+					mi++
 				}
-			})
+			}
+			if posX < Width-1 && b.Fields[pos+(Width+1)]&piece.Colors == piece.White { // capture right-bottom
+				move := Move{FromPos: byte(pos), ToPos: byte(pos + (Width + 1)), CapturePiece: b.Fields[pos+(Width+1)], PromotionPiece: piece.BlackQueen}
+				if b.simpleMoveCheck(move) {
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.BlackRook
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.BlackBishop
+					mv[mi] = move
+					mi++
+					move.PromotionPiece = piece.BlackKnight
+					mv[mi] = move
+					mi++
+				}
+			}
+		} else {
+			switch field {
+			case piece.BlackKing:
+				var movePos int
+				if posX > 0 {
+					movePos = pos - (Width + 1) // left-up
+					if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos - 1 // left
+					if b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width - 1) // left-down
+					if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				if posX < Width-1 {
+					movePos = pos - (Width - 1) // right-up
+					if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + 1 // right
+					if b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width + 1) // right-down
+					if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				movePos = pos - Width // up
+				if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				movePos = pos + Width // down
+				if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				if pos == 4 {
+					if b.BlackCanCastleQueenside &&
+						b.Fields[1] == piece.None && b.Fields[2] == piece.None && b.Fields[3] == piece.None &&
+						!b.isChecked(2, piece.White) && !b.isChecked(3, piece.White) && !b.isChecked(4, piece.White) {
+						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
+						mi++
+					}
+					if b.BlackCanCastleKingside &&
+						b.Fields[5] == piece.None && b.Fields[6] == piece.None &&
+						!b.isChecked(4, piece.White) && !b.isChecked(5, piece.White) && !b.isChecked(6, piece.White) {
+						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
+						mi++
+					}
+				}
 
-			if pos == 60 && p == piece.WhiteKing {
-				if b.WhiteCanCastleQueenside &&
-					b.Fields[57] == piece.None && b.Fields[58] == piece.None && b.Fields[59] == piece.None &&
-					!b.isChecked(58, piece.Black) && !b.isChecked(59, piece.Black) && !b.isChecked(60, piece.Black) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
-					mi++
+			case piece.BlackQueen:
+				// left
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 {
+						break
+					}
+					p := pos - i
+					f := b.Fields[p]
+					if (f & piece.Black) != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-				if b.WhiteCanCastleKingside &&
-					b.Fields[61] == piece.None && b.Fields[62] == piece.None &&
-					!b.isChecked(60, piece.Black) && !b.isChecked(61, piece.Black) && !b.isChecked(62, piece.Black) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
-					mi++
+				// right
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width {
+						break
+					}
+					p := pos + i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-			} else if pos == 4 && p == piece.BlackKing {
-				if b.BlackCanCastleQueenside &&
-					b.Fields[1] == piece.None && b.Fields[2] == piece.None && b.Fields[3] == piece.None &&
-					!b.isChecked(2, piece.White) && !b.isChecked(3, piece.White) && !b.isChecked(4, piece.White) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
-					mi++
+				// up
+				for i := 1; i < Height; i++ {
+					if posY-i < 0 {
+						break
+					}
+					p := pos - Width*i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
 				}
-				if b.BlackCanCastleKingside &&
-					b.Fields[5] == piece.None && b.Fields[6] == piece.None &&
-					!b.isChecked(4, piece.White) && !b.isChecked(5, piece.White) && !b.isChecked(6, piece.White) {
-					mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
-					mi++
+				// down
+				for i := 1; i < Height; i++ {
+					if posY+i >= Height {
+						break
+					}
+					p := pos + Width*i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-up
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-down
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-up
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-down
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.BlackRook:
+				// left
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 {
+						break
+					}
+					p := pos - i
+					f := b.Fields[p]
+					if (f & piece.Black) != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width {
+						break
+					}
+					p := pos + i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// up
+				for i := 1; i < Height; i++ {
+					if posY-i < 0 {
+						break
+					}
+					p := pos - Width*i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// down
+				for i := 1; i < Height; i++ {
+					if posY+i >= Height {
+						break
+					}
+					p := pos + Width*i
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.BlackBishop:
+				// left-up
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// left-down
+				for i := 1; i < Width; i++ {
+					if posX-i < 0 || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-up
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY-i < 0 {
+						break
+					}
+					p := pos - (Width*i - i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+				// right-down
+				for i := 1; i < Width; i++ {
+					if posX+i >= Width || posY+i >= Height {
+						break
+					}
+					p := pos + (Width*i + i)
+					f := b.Fields[p]
+					if f&piece.Black != piece.None {
+						break
+					}
+					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					if f != piece.None {
+						break
+					}
+				}
+
+			case piece.BlackKnight:
+				var movePos int
+				if posX > 0 {
+					movePos = pos - (Width*2 + 1) // -1, -2
+					if posY > 1 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width*2 - 1) // -1, +2
+					if posY < Height-2 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					if posX > 1 {
+						movePos = pos - (Width + 2) // -2, -1
+						if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+						movePos = pos + (Width - 2) // -2, +1
+						if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+					}
+				}
+				if posX < Width-1 {
+					movePos = pos - (Width*2 - 1) // +1, -2
+					if posY > 1 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					movePos = pos + (Width*2 + 1) // +1, +2
+					if posY < Height-2 && b.Fields[movePos]&piece.Black == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+					if posX < Width-2 {
+						movePos = pos - (Width - 2) // +2, +1
+						if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+						movePos = pos + (Width + 2) // +2, -1
+						if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
+							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+							if b.simpleMoveCheck(move) {
+								mv[mi] = move
+								mi++
+							}
+						}
+					}
+				}
+
+			case piece.BlackPawn:
+				if posY < 1 || posY >= Height-1 { // invalid pos?
+					break
+				}
+				var movePos int
+				movePos = pos + Width
+				if b.Fields[movePos] == piece.None {
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+					movePos = pos + Width*2
+					if posY == 1 && b.Fields[movePos] == piece.None {
+						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if b.simpleMoveCheck(move) {
+							mv[mi] = move
+							mi++
+						}
+					}
+				}
+				movePos = pos + (Width - 1)
+				if posX > 0 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.White) { // capture left-top
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
+				}
+				movePos = pos + (Width + 1)
+				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.White) { // capture right-top
+					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.simpleMoveCheck(move) {
+						mv[mi] = move
+						mi++
+					}
 				}
 			}
 		}
