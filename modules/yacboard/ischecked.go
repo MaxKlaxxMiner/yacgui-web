@@ -7,15 +7,16 @@ import (
 
 func (board *YacBoard) IsChecked() bool {
 	if board.WhiteMove {
-		return board.isChecked(Pos(FToP(board.WhiteKingPosF)), piece.Black)
+		return board.isChecked(board.WhiteKingPosF, piece.Black)
 	} else {
-		return board.isChecked(Pos(FToP(board.BlackKingPosF)), piece.WhiteKing)
+		return board.isChecked(board.BlackKingPosF, piece.WhiteKing)
 	}
 }
 
-func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
-	posX := int(pos % Width)
-	posY := int(pos / Width)
+func (board *YacBoard) isChecked(posF PosF, checkerColor piece.Piece) bool {
+	posX := int(posF%WidthF - 1)
+	posY := int(posF/WidthF - 1)
+	pos := Pos(FToP(posF))
 
 	// --- check pawn and king ---
 	if checkerColor == piece.White {

@@ -544,37 +544,37 @@ func hasBlackMoves(b *YacBoard) bool {
 
 func (board *YacBoard) HasMoves() bool {
 	if board.WhiteMove {
-		kp := Pos(FToP(board.WhiteKingPosF))
-		posX := kp % Width
-		board.FieldsF[PToFp(kp)] = piece.None
+		kp := board.WhiteKingPosF
+		posX := kp%WidthF - 1
+		board.FieldsF[kp] = piece.None
 
-		if posX > 0 && board.FieldsF[PToFp(kp-1)]&piece.White == piece.None && !board.isChecked(kp-1, piece.Black) {
-			board.FieldsF[PToFp(kp)] = piece.WhiteKing
+		if posX > 0 && board.FieldsF[kp-1]&piece.White == piece.None && !board.isChecked(kp-1, piece.Black) {
+			board.FieldsF[kp] = piece.WhiteKing
 			return true
 		}
 
-		if posX < 7 && board.FieldsF[PToFp(kp+1)]&piece.White == piece.None && !board.isChecked(kp+1, piece.Black) {
-			board.FieldsF[PToFp(kp)] = piece.WhiteKing
+		if posX < 7 && board.FieldsF[kp+1]&piece.White == piece.None && !board.isChecked(kp+1, piece.Black) {
+			board.FieldsF[kp] = piece.WhiteKing
 			return true
 		}
 
-		board.FieldsF[PToFp(kp)] = piece.WhiteKing
+		board.FieldsF[kp] = piece.WhiteKing
 		return hasWhiteMoves(board)
 	} else {
-		kp := Pos(FToP(board.BlackKingPosF))
-		posX := kp % Width
-		board.FieldsF[PToFp(kp)] = piece.None
+		kp := board.BlackKingPosF
+		posX := kp%WidthF - 1
+		board.FieldsF[kp] = piece.None
 
-		if posX > 0 && board.FieldsF[PToFp(kp-1)]&piece.Black == piece.None && !board.isChecked(kp-1, piece.White) {
-			board.FieldsF[PToFp(kp)] = piece.BlackKing
+		if posX > 0 && board.FieldsF[kp-1]&piece.Black == piece.None && !board.isChecked(kp-1, piece.White) {
+			board.FieldsF[kp] = piece.BlackKing
 			return true
 		}
 
-		if posX < 7 && board.FieldsF[PToFp(kp+1)]&piece.Black == piece.None && !board.isChecked(kp+1, piece.White) {
-			board.FieldsF[PToFp(kp)] = piece.BlackKing
+		if posX < 7 && board.FieldsF[kp+1]&piece.Black == piece.None && !board.isChecked(kp+1, piece.White) {
+			board.FieldsF[kp] = piece.BlackKing
 			return true
 		}
-		board.FieldsF[PToFp(kp)] = piece.BlackKing
+		board.FieldsF[kp] = piece.BlackKing
 		return hasBlackMoves(board)
 	}
 }

@@ -41,11 +41,11 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 
 	// --- is the king is in check ---
 	{
-		var kingPos Pos
+		var kingPos PosF
 		if board.WhiteMove {
-			kingPos = Pos(FToP(board.WhiteKingPosF))
+			kingPos = board.WhiteKingPosF
 		} else {
-			kingPos = Pos(FToP(board.BlackKingPosF))
+			kingPos = board.BlackKingPosF
 		}
 		if board.isChecked(kingPos, board.invertedMoveColor()) {
 			board.FieldsF[move.ToPosF] = move.CapturePiece
