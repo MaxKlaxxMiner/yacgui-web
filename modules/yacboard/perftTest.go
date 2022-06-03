@@ -2,6 +2,7 @@ package yacboard
 
 import (
 	"fmt"
+	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/goBit"
 	"strconv"
 	"time"
 )
@@ -48,6 +49,33 @@ func moveCounter(board *YacBoard, level int) int {
 	return totalCount
 }
 
+var moveListCache [16]goBit.MoveList
+
+func moveCounter2(board *goBit.BoardStruct, level int) int {
+	moves := &moveListCache[level]
+	moves.Clear()
+	board.GenAllMoves(moves)
+	if level <= 1 {
+		count := 0
+		for m := 0; m < len(*moves); m++ {
+			if board.Move((*moves)[m]) {
+				count++
+				board.UnMove((*moves)[m])
+			}
+		}
+		return count
+	}
+	level--
+	totalCount := 0
+	for m := 0; m < len(*moves); m++ {
+		if board.Move((*moves)[m]) {
+			totalCount += moveCounter2(board, level)
+			board.UnMove((*moves)[m])
+		}
+	}
+	return totalCount
+}
+
 func perftTestFEN(fen string, nodeCounter []int64) {
 	board, err := NewFromFEN(fen)
 	if err != nil {
@@ -78,15 +106,31 @@ func perftTestFEN(fen string, nodeCounter []int64) {
 			panic("perft fail")
 		}
 	}
+
+	goBitsBoard := goBit.BoardStruct{}
+	goBitsBoard.ParseFEN(fen)
+	fmt.Println("--- goBits ---")
+	for level := 1; level <= len(nodeCounter); level++ {
+		fmt.Print("Level: ", level, " / ", len(nodeCounter), " Nodes: ")
+		tim := time.Now()
+		count := int64(moveCounter2(&goBitsBoard, level))
+		fmt.Printf("%s (%s ms)", numFormat(count), numFormat(time.Since(tim).Milliseconds()))
+		if count == nodeCounter[len(nodeCounter)-level] {
+			fmt.Println(" [ok]")
+		} else {
+			fmt.Printf(" [FAIL] %d != %d\n", count, nodeCounter[len(nodeCounter)-level])
+			panic("perft fail")
+		}
+	}
 }
 
 func PerftTest(trim int) {
 	// source: https://www.chessprogramming.org/Perft_Results
-	perftTestFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", ([]int64{3195901860, 119060324, 4865609, 197281, 8902, 400, 20})[trim:])
-	perftTestFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1", ([]int64{8031647685, 193690690, 4085603, 97862, 2039, 48})[trim:])
-	perftTestFEN("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1", ([]int64{3009794393, 178633661, 11030083, 674624, 43238, 2812, 191, 14})[trim:])
-	perftTestFEN("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1", ([]int64{706045033, 15833292, 422333, 9467, 264, 6})[trim:])
-	perftTestFEN("r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1", ([]int64{706045033, 15833292, 422333, 9467, 264, 6})[trim:])
-	perftTestFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8", ([]int64{3048196529, 89941194, 2103487, 62379, 1486, 44})[trim:])
+	//perftTestFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", ([]int64{3195901860, 119060324, 4865609, 197281, 8902, 400, 20})[trim:])
+	//perftTestFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1", ([]int64{8031647685, 193690690, 4085603, 97862, 2039, 48})[trim:])
+	//perftTestFEN("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1", ([]int64{3009794393, 178633661, 11030083, 674624, 43238, 2812, 191, 14})[trim:])
+	//perftTestFEN("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1", ([]int64{706045033, 15833292, 422333, 9467, 264, 6})[trim:])
+	//perftTestFEN("r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1", ([]int64{706045033, 15833292, 422333, 9467, 264, 6})[trim:])
+	//perftTestFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8", ([]int64{3048196529, 89941194, 2103487, 62379, 1486, 44})[trim:])
 	perftTestFEN("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", ([]int64{6923051137, 164075551, 3894594, 89890, 2079, 46})[trim:])
 }
