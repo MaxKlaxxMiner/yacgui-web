@@ -47,11 +47,11 @@ func TestSetField(t *testing.T) {
 	board, _ := NewFromFEN("rnbk1bnr/pppp1ppp/8/8/2B1P3/8/P2K1PPP/qN1Q2NR b - - 1 7")
 
 	board.SetField(FromChars("d8"), piece.BlackQueen)
-	if FToPp(board.BlackKingPosF) != FromChars("d8") || FToPp(board.BlackKingPosF) == FromChars("e8") {
+	if Pos(FToP(board.BlackKingPosF)) != FromChars("d8") || Pos(FToP(board.BlackKingPosF)) == FromChars("e8") {
 		t.Errorf("invalid old black king pos")
 	}
 	board.SetField(FromChars("e8"), piece.BlackKing)
-	if FToPp(board.BlackKingPosF) == FromChars("d8") || FToPp(board.BlackKingPosF) != FromChars("e8") {
+	if Pos(FToP(board.BlackKingPosF)) == FromChars("d8") || Pos(FToP(board.BlackKingPosF)) != FromChars("e8") {
 		t.Errorf("invalid new black king pos")
 	}
 	board.SetField(FromChars("e7"), piece.BlackPawn)
@@ -63,11 +63,11 @@ func TestSetField(t *testing.T) {
 	board.SetField(FromChars("e2"), piece.WhitePawn)
 	board.SetField(FromChars("a1"), piece.WhiteRook)
 	board.SetField(FromChars("c1"), piece.WhiteBishop)
-	if FToPp(board.WhiteKingPosF) != FromChars("d2") || FToPp(board.WhiteKingPosF) == FromChars("e1") {
+	if Pos(FToP(board.WhiteKingPosF)) != FromChars("d2") || Pos(FToP(board.WhiteKingPosF)) == FromChars("e1") {
 		t.Errorf("invalid old white king pos")
 	}
 	board.SetField(FromChars("e1"), piece.WhiteKing)
-	if FToPp(board.WhiteKingPosF) == FromChars("d2") || FToPp(board.WhiteKingPosF) != FromChars("e1") {
+	if Pos(FToP(board.WhiteKingPosF)) == FromChars("d2") || Pos(FToP(board.WhiteKingPosF)) != FromChars("e1") {
 		t.Errorf("invalid new white king pos")
 	}
 	board.SetField(FromChars("f1"), piece.WhiteBishop)

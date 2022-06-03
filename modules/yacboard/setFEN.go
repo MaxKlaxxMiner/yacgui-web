@@ -122,22 +122,22 @@ func (board *YacBoard) SetFEN(fen string) error {
 	if board.EnPassantPosF > 0 {
 		if board.WhiteMove {
 			if board.EnPassantPosF < PToFp(FromChars("a6")) || board.EnPassantPosF > PToFp(FromChars("h6")) {
-				board.EnPassantPosF = -1
+				board.EnPassantPosF = 0
 			}
 			if board.EnPassantPosF > 0 && board.FieldsF[board.EnPassantPosF+WidthF] != piece.BlackPawn {
-				board.EnPassantPosF = -1
+				board.EnPassantPosF = 0
 			}
 		} else {
 			if board.EnPassantPosF < PToFp(FromChars("a3")) || board.EnPassantPosF > PToFp(FromChars("h3")) {
-				board.EnPassantPosF = -1
+				board.EnPassantPosF = 0
 			}
 			if board.EnPassantPosF > 0 && board.FieldsF[board.EnPassantPosF-WidthF] != piece.WhitePawn {
-				board.EnPassantPosF = -1
+				board.EnPassantPosF = 0
 			}
 		}
 	}
 
-	if board.EnPassantPosF == -1 && splits[3] != "-" {
+	if board.EnPassantPosF == 0 && splits[3] != "-" {
 		return errors.New(fmt.Sprintf("invalid FEN: invalid en passant value: \"%v\"", splits[3]))
 	}
 

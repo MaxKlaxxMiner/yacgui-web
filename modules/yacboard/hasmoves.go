@@ -404,12 +404,12 @@ func scanMoveStop(b *YacBoard, pos Pos, foundMove func(pos Pos) bool) bool {
 					}
 				}
 			}
-			if posX > 0 && (FToPp(b.EnPassantPosF) == pos-(Width+1) || b.FieldsF[PToFp(pos-(Width+1))]&piece.Colors == piece.Black) { // capture left-top
+			if posX > 0 && (Pos(FToP(b.EnPassantPosF)) == pos-(Width+1) || b.FieldsF[PToFp(pos-(Width+1))]&piece.Colors == piece.Black) { // capture left-top
 				if foundMove(pos - (Width + 1)) {
 					return true
 				}
 			}
-			if posX < Width-1 && (FToPp(b.EnPassantPosF) == pos-(Width-1) || b.FieldsF[PToFp(pos-(Width-1))]&piece.Colors == piece.Black) { // capture right-top
+			if posX < Width-1 && (Pos(FToP(b.EnPassantPosF)) == pos-(Width-1) || b.FieldsF[PToFp(pos-(Width-1))]&piece.Colors == piece.Black) { // capture right-top
 				if foundMove(pos - (Width - 1)) {
 					return true
 				}
@@ -425,12 +425,12 @@ func scanMoveStop(b *YacBoard, pos Pos, foundMove func(pos Pos) bool) bool {
 					}
 				}
 			}
-			if posX > 0 && (FToPp(b.EnPassantPosF) == pos+(Width-1) || b.FieldsF[PToFp(pos+(Width-1))]&piece.Colors == piece.White) {
+			if posX > 0 && (Pos(FToP(b.EnPassantPosF)) == pos+(Width-1) || b.FieldsF[PToFp(pos+(Width-1))]&piece.Colors == piece.White) {
 				if foundMove(pos + (Width - 1)) {
 					return true
 				}
 			}
-			if posX < Width-1 && (FToPp(b.EnPassantPosF) == pos+(Width+1) || b.FieldsF[PToFp(pos+(Width+1))]&piece.Colors == piece.White) {
+			if posX < Width-1 && (Pos(FToP(b.EnPassantPosF)) == pos+(Width+1) || b.FieldsF[PToFp(pos+(Width+1))]&piece.Colors == piece.White) {
 				if foundMove(pos + (Width + 1)) {
 					return true
 				}
@@ -544,7 +544,7 @@ func hasBlackMoves(b *YacBoard) bool {
 
 func (board *YacBoard) HasMoves() bool {
 	if board.WhiteMove {
-		kp := FToPp(board.WhiteKingPosF)
+		kp := Pos(FToP(board.WhiteKingPosF))
 		posX := kp % Width
 		board.FieldsF[PToFp(kp)] = piece.None
 
@@ -561,7 +561,7 @@ func (board *YacBoard) HasMoves() bool {
 		board.FieldsF[PToFp(kp)] = piece.WhiteKing
 		return hasWhiteMoves(board)
 	} else {
-		kp := FToPp(board.BlackKingPosF)
+		kp := Pos(FToP(board.BlackKingPosF))
 		posX := kp % Width
 		board.FieldsF[PToFp(kp)] = piece.None
 

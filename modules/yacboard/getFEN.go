@@ -48,7 +48,7 @@ func (board *YacBoard) GetFEN() string {
 		result = append(result, '-')
 	}
 
-	result = append(result, fmt.Sprintf(" %s %d %d", FToPp(board.EnPassantPosF), board.HalfmoveClock, board.MoveNumber)...)
+	result = append(result, fmt.Sprintf(" %s %d %d", Pos(FToP(board.EnPassantPosF)), board.HalfmoveClock, board.MoveNumber)...)
 
 	return string(result[1:])
 }

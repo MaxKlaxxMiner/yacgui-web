@@ -35,11 +35,11 @@ func (board *YacBoard) DoMove(move Move) {
 	{
 		var kingPos Pos
 		if board.WhiteMove {
-			kingPos = FToPp(board.WhiteKingPosF)
+			kingPos = Pos(FToP(board.WhiteKingPosF))
 		} else {
-			kingPos = FToPp(board.BlackKingPosF)
+			kingPos = Pos(FToP(board.BlackKingPosF))
 		}
-		if kingPos == Pos(FToPb(move.ToPosF)) && (move.ToPosF-move.FromPosF == 2 || int(move.ToPosF)-int(move.FromPosF) == -2) {
+		if kingPos == Pos(FToP(move.ToPosF)) && (move.ToPosF-move.FromPosF == 2 || int(move.ToPosF)-int(move.FromPosF) == -2) {
 			switch kingPos {
 			case 2:
 				board.FieldsF[PToF(0)] = piece.None
@@ -57,7 +57,7 @@ func (board *YacBoard) DoMove(move Move) {
 		}
 	}
 
-	board.EnPassantPosF = -1
+	board.EnPassantPosF = 0
 	if p&piece.Pawn != piece.None && (move.ToPosF-move.FromPosF == WidthF*2 || move.FromPosF-move.ToPosF == WidthF*2) {
 		board.EnPassantPosF = PosF((move.FromPosF + move.ToPosF) / 2)
 		posX := board.EnPassantPosF%WidthF + 1
@@ -78,11 +78,11 @@ func (board *YacBoard) DoMove(move Move) {
 			}
 		}
 		if !opPawn {
-			board.EnPassantPosF = -1
+			board.EnPassantPosF = 0
 		}
 	}
 
-	switch FToPb(move.FromPosF) {
+	switch FToP(move.FromPosF) {
 	case 0:
 		board.BlackCanCastleQueenside = false
 	case 4:
@@ -98,7 +98,7 @@ func (board *YacBoard) DoMove(move Move) {
 	case 63:
 		board.WhiteCanCastleKingside = false
 	}
-	switch FToPb(move.ToPosF) {
+	switch FToP(move.ToPosF) {
 	case 0:
 		board.BlackCanCastleQueenside = false
 	case 7:
@@ -147,7 +147,7 @@ func (board *YacBoard) DoMoveBackward(move Move, lastBoardInfos BoardInfo) {
 
 		posXdif := int(move.FromPosF%WidthF) - int(move.ToPosF%WidthF)
 		if posXdif > 1 || posXdif < -1 {
-			switch FToPb(move.ToPosF) {
+			switch FToP(move.ToPosF) {
 			case 2: // black O-O-O
 				board.FieldsF[PToF(0)] = piece.BlackRook
 				board.FieldsF[PToF(3)] = piece.None

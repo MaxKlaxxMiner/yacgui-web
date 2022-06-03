@@ -9,8 +9,8 @@ import (
 type Move struct {
 	PromotionPiece piece.Piece
 	CapturePiece   piece.Piece
-	FromPosF       byte
-	ToPosF         byte
+	FromPosF       PosF
+	ToPosF         PosF
 }
 
 func (m Move) IsValid(optionalBoard *YacBoard) bool {
@@ -28,9 +28,9 @@ func (m Move) String() string {
 		return "-"
 	}
 
-	result := fmt.Sprintf("%s-%s", Pos(FToPb(m.FromPosF)), Pos(FToPb(m.ToPosF)))
+	result := fmt.Sprintf("%s-%s", Pos(FToP(m.FromPosF)), Pos(FToP(m.ToPosF)))
 	if m.CapturePiece != piece.None {
-		result = fmt.Sprintf("%sx%s", Pos(FToPb(m.FromPosF)), Pos(FToPb(m.ToPosF)))
+		result = fmt.Sprintf("%sx%s", Pos(FToP(m.FromPosF)), Pos(FToP(m.ToPosF)))
 	}
 
 	if m.PromotionPiece != piece.None {

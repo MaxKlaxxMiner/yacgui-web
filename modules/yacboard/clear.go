@@ -20,9 +20,9 @@ func (board *YacBoard) Clear() {
 
 	board.HalfmoveClock = 0
 	board.MoveNumber = 1
-	board.WhiteKingPosF = -1
-	board.BlackKingPosF = -1
-	board.EnPassantPosF = -1
+	board.WhiteKingPosF = 0
+	board.BlackKingPosF = 0
+	board.EnPassantPosF = 0
 
 	board.WhiteMove = true
 	board.WhiteCanCastleKingside = false

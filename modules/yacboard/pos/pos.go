@@ -1,7 +1,7 @@
 package pos
 
 type Pos int
-type PosF int
+type PosF byte
 
 func FromXY(x, y int) Pos {
 	if uint(x) >= Width || uint(y) >= Height {
@@ -28,32 +28,24 @@ func (pos Pos) String() string {
 	return string([]byte{byte(file), byte(rank)})
 }
 
-func PToF(pos int) int {
+func PToF(pos int) PosF {
 	if pos < 0 {
-		return pos
+		return 0
 	}
-	return pos%Width + 1 + (pos/Width+1)*WidthF
+	return PosF(pos%Width + 1 + (pos/Width+1)*WidthF)
 }
 
-func PToFb(pos byte) byte {
-	return byte(PToF(int(pos)))
+func PToFb(pos byte) PosF {
+	return PToF(int(pos))
 }
 
 func PToFp(pos Pos) PosF {
-	return PosF(PToF(int(pos)))
+	return PToF(int(pos))
 }
 
-func FToP(pos int) int {
-	if pos < 0 {
-		return pos
+func FToP(pos PosF) int {
+	if pos == 0 {
+		return -1
 	}
-	return pos%WidthF - 1 + (pos/WidthF-1)*Width
-}
-
-func FToPb(pos byte) int {
-	return FToP(int(pos))
-}
-
-func FToPp(pos PosF) Pos {
-	return Pos(FToP(int(pos)))
+	return int(pos)%WidthF - 1 + (int(pos)/WidthF-1)*Width
 }
