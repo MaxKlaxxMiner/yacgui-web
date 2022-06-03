@@ -6,6 +6,6 @@ const (
 	FieldCount  = Width * Height
 	WidthF      = 10
 	HeightF     = 10
-	FieldCountF = WidthF * HeightF
+	FieldCountF = 256
 	FenMaxBytes = (Width+1)*Height + 20
 )

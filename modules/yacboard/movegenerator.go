@@ -19,7 +19,7 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 	board.FieldsF[move.ToPosF] = p
 	board.FieldsF[move.FromPosF] = piece.None
 
-	if PosF(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant"?
+	if move.ToPosF == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant"?
 		if board.WhiteMove {
 			board.FieldsF[move.ToPosF+WidthF] = piece.None
 		} else {
@@ -50,7 +50,7 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 		if board.isChecked(kingPos, board.invertedMoveColor()) {
 			board.FieldsF[move.ToPosF] = move.CapturePiece
 			board.FieldsF[move.FromPosF] = p
-			if PosF(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant" ?
+			if move.ToPosF == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant" ?
 				if board.WhiteMove {
 					board.FieldsF[move.ToPosF+WidthF] = piece.BlackPawn
 				} else {
@@ -70,7 +70,7 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 
 	board.FieldsF[move.ToPosF] = move.CapturePiece
 	board.FieldsF[move.FromPosF] = p
-	if PosF(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None {
+	if move.ToPosF == board.EnPassantPosF && p&piece.Pawn != piece.None {
 		if board.WhiteMove {
 			board.FieldsF[move.ToPosF+WidthF] = piece.BlackPawn
 		} else {
@@ -79,9 +79,9 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 	}
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPosF = PosF(move.FromPosF)
+			board.WhiteKingPosF = move.FromPosF
 		} else {
-			board.BlackKingPosF = PosF(move.FromPosF)
+			board.BlackKingPosF = move.FromPosF
 		}
 	}
 	return true
