@@ -1,7 +1,6 @@
 package yacboard
 
 import (
-	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
 	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
@@ -27,7 +26,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if pos-1 == board.WhiteKingPos {
 				return true
 			}
-			if posY < Height-1 && (pos+(Width-1) == board.WhiteKingPos || board.Fields[pos+(Width-1)] == piece.WhitePawn) {
+			if posY < Height-1 && (pos+(Width-1) == board.WhiteKingPos || board.FieldsF[PToFp(pos+(Width-1))] == piece.WhitePawn) {
 				return true
 			}
 		}
@@ -38,7 +37,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if pos+1 == board.WhiteKingPos {
 				return true
 			}
-			if posY < Height-1 && (pos+(Width+1) == board.WhiteKingPos || board.Fields[pos+(Width+1)] == piece.WhitePawn) {
+			if posY < Height-1 && (pos+(Width+1) == board.WhiteKingPos || board.FieldsF[PToFp(pos+(Width+1))] == piece.WhitePawn) {
 				return true
 			}
 		}
@@ -50,7 +49,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 		}
 	} else {
 		if posX > 0 {
-			if posY > 0 && (pos-(Width+1) == board.BlackKingPos || board.Fields[pos-(Width+1)] == piece.BlackPawn) {
+			if posY > 0 && (pos-(Width+1) == board.BlackKingPos || board.FieldsF[PToFp(pos-(Width+1))] == piece.BlackPawn) {
 				return true
 			}
 			if pos-1 == board.BlackKingPos {
@@ -61,7 +60,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			}
 		}
 		if posX < Width-1 {
-			if posY > 0 && (pos-(Width-1) == board.BlackKingPos || board.Fields[pos-(Width-1)] == piece.BlackPawn) {
+			if posY > 0 && (pos-(Width-1) == board.BlackKingPos || board.FieldsF[PToFp(pos-(Width-1))] == piece.BlackPawn) {
 				return true
 			}
 			if pos+1 == board.BlackKingPos {
@@ -83,33 +82,33 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 	{
 		knight := checkerColor | piece.Knight
 		if posX > 0 {
-			if posY > 1 && board.Fields[pos-(Width*2+1)] == knight { // -1, -2
+			if posY > 1 && board.FieldsF[PToFp(pos-(Width*2+1))] == knight { // -1, -2
 				return true
 			}
-			if posY < Height-2 && board.Fields[pos+(Width*2-1)] == knight { // -1, +2
+			if posY < Height-2 && board.FieldsF[PToFp(pos+(Width*2-1))] == knight { // -1, +2
 				return true
 			}
 			if posX > 1 {
-				if posY > 0 && board.Fields[pos-(Width+2)] == knight { // -2, -1
+				if posY > 0 && board.FieldsF[PToFp(pos-(Width+2))] == knight { // -2, -1
 					return true
 				}
-				if posY < Height-1 && board.Fields[pos+(Width-2)] == knight { // -2, +1
+				if posY < Height-1 && board.FieldsF[PToFp(pos+(Width-2))] == knight { // -2, +1
 					return true
 				}
 			}
 		}
 		if posX < Width-1 {
-			if posY > 1 && board.Fields[pos-(Width*2-1)] == knight { // +1, -2
+			if posY > 1 && board.FieldsF[PToFp(pos-(Width*2-1))] == knight { // +1, -2
 				return true
 			}
-			if posY < Height-2 && board.Fields[pos+(Width*2+1)] == knight { // +1, +2
+			if posY < Height-2 && board.FieldsF[PToFp(pos+(Width*2+1))] == knight { // +1, +2
 				return true
 			}
 			if posX < Width-2 {
-				if posY > 0 && board.Fields[pos-(Width-2)] == knight { // +2, +1
+				if posY > 0 && board.FieldsF[PToFp(pos-(Width-2))] == knight { // +2, +1
 					return true
 				}
-				if posY < Height-1 && board.Fields[pos+(Width+2)] == knight { // +2, -1
+				if posY < Height-1 && board.FieldsF[PToFp(pos+(Width+2))] == knight { // +2, -1
 					return true
 				}
 			}
@@ -122,7 +121,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX-i < 0 {
 				break
 			}
-			f := board.Fields[pos-Pos(i)]
+			f := board.FieldsF[PToFp(pos-Pos(i))]
 			if f == piece.None {
 				continue
 			}
@@ -135,7 +134,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX+i >= Width {
 				break
 			}
-			f := board.Fields[pos+Pos(i)]
+			f := board.FieldsF[PToFp(pos+Pos(i))]
 			if f == piece.None {
 				continue
 			}
@@ -148,7 +147,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posY-i < 0 {
 				break
 			}
-			f := board.Fields[pos-Pos(Width*i)]
+			f := board.FieldsF[PToFp(pos-Pos(Width*i))]
 			if f == piece.None {
 				continue
 			}
@@ -161,7 +160,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posY+i >= Height {
 				break
 			}
-			f := board.Fields[pos+Pos(Width*i)]
+			f := board.FieldsF[PToFp(pos+Pos(Width*i))]
 			if f == piece.None {
 				continue
 			}
@@ -178,7 +177,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX-i < 0 || posY-i < 0 {
 				break
 			}
-			f := board.Fields[pos-Pos(Width*i+i)]
+			f := board.FieldsF[PToFp(pos-Pos(Width*i+i))]
 			if f == piece.None {
 				continue
 			}
@@ -191,7 +190,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX-i < 0 || posY+i >= Height {
 				break
 			}
-			f := board.Fields[pos+Pos(Width*i-i)]
+			f := board.FieldsF[PToFp(pos+Pos(Width*i-i))]
 			if f == piece.None {
 				continue
 			}
@@ -204,7 +203,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX+i >= Width || posY-i < 0 {
 				break
 			}
-			f := board.Fields[pos-Pos(Width*i-i)]
+			f := board.FieldsF[PToFp(pos-Pos(Width*i-i))]
 			if f == piece.None {
 				continue
 			}
@@ -217,7 +216,7 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 			if posX+i >= Width || posY+i >= Height {
 				break
 			}
-			f := board.Fields[pos+Pos(Width*i+i)]
+			f := board.FieldsF[PToFp(pos+Pos(Width*i+i))]
 			if f == piece.None {
 				continue
 			}

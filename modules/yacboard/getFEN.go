@@ -2,19 +2,18 @@ package yacboard
 
 import (
 	"fmt"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"unicode"
 )
 
 func (board *YacBoard) GetFEN() string {
 	result := make([]byte, 0, 64)
 
-	for y := 0; y < boardsize.Height; y++ {
+	for y := 0; y < Height; y++ {
 		result = append(result, '/')
-		for x := 0; x < boardsize.Width; x++ {
-			c := piece.ToChar(board.GetField(pos.FromXY(x, y)))
+		for x := 0; x < Width; x++ {
+			c := piece.ToChar(board.GetField(FromXY(x, y)))
 			if c == '.' {
 				if unicode.IsDigit(rune(result[len(result)-1])) {
 					result[len(result)-1]++

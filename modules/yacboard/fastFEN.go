@@ -2,13 +2,14 @@ package yacboard
 
 import (
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
 
 func (board *YacBoard) GetFastFEN(buf []byte, ofs int) int {
 	p := 0
 	gap := 0
-	for _, field := range board.Fields {
+	for i := 0; i < FieldCount; i++ {
+		field := board.FieldsF[PToF(i)]
 		if field == piece.None {
 			gap++
 			continue
@@ -41,24 +42,24 @@ func (board *YacBoard) GetFastFEN(buf []byte, ofs int) int {
 func (board *YacBoard) SetFastFEN(buf []byte, ofs int) int {
 	p := 0
 	var b byte
-	for i := 0; i < len(board.Fields); i++ {
+	for i := 0; i < FieldCount; i++ {
 		b = buf[ofs+p]
 		p++
 		if b < 64 { // gap?
-			board.Fields[i] = piece.None
+			board.FieldsF[PToF(i)] = piece.None
 			for b > 1 {
 				i++
-				board.Fields[i] = piece.None
+				board.FieldsF[PToF(i)] = piece.None
 				b--
 			}
 			continue
 		}
-		board.Fields[i] = piece.Piece(b)
+		board.FieldsF[PToF(i)] = piece.Piece(b)
 		if piece.Piece(b)&piece.King != piece.None {
 			if piece.Piece(b) == piece.WhiteKing {
-				board.WhiteKingPos = pos.Pos(i)
+				board.WhiteKingPos = Pos(i)
 			} else {
-				board.BlackKingPos = pos.Pos(i)
+				board.BlackKingPos = Pos(i)
 			}
 		}
 	}

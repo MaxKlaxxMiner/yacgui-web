@@ -3,9 +3,8 @@ package yacboard
 import (
 	"errors"
 	"fmt"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"strconv"
 	"strings"
 )
@@ -13,7 +12,7 @@ import (
 func (board *YacBoard) SetFEN(fen string) error {
 	board.Clear()
 
-	if len(fen) > boardsize.FenMaxBytes {
+	if len(fen) > FenMaxBytes {
 		return errors.New("invalid FEN: too long")
 	}
 
@@ -26,8 +25,8 @@ func (board *YacBoard) SetFEN(fen string) error {
 		}
 	}
 	lines := strings.Split(splits[0], "/")
-	if len(lines) != boardsize.Height {
-		return errors.New(fmt.Sprintf("invalid FEN: ranks: %d, expected: %d", len(lines), boardsize.Height))
+	if len(lines) != Height {
+		return errors.New(fmt.Sprintf("invalid FEN: ranks: %d, expected: %d", len(lines), Height))
 	}
 
 	// --- 1 / 6 - read pieces ---
@@ -43,14 +42,14 @@ func (board *YacBoard) SetFEN(fen string) error {
 				x += int(c - '0')
 				continue
 			}
-			if x < boardsize.Width {
-				board.SetField(pos.FromXY(x, y), p)
+			if x < Width {
+				board.SetField(FromXY(x, y), p)
 			}
 			x++
 		}
 
-		if x != boardsize.Width {
-			return errors.New(fmt.Sprintf("invalid FEN: at rank %d: files: %d, expected: %d", boardsize.Height-y, x, boardsize.Width))
+		if x != Width {
+			return errors.New(fmt.Sprintf("invalid FEN: at rank %d: files: %d, expected: %d", Height-y, x, Width))
 		}
 	}
 
@@ -119,20 +118,20 @@ func (board *YacBoard) SetFEN(fen string) error {
 	}
 
 	// --- 4 / 6 - "en passant" ---
-	board.EnPassantPos = pos.FromChars(splits[3])
+	board.EnPassantPos = FromChars(splits[3])
 	if board.EnPassantPos > 0 {
 		if board.WhiteMove {
-			if board.EnPassantPos < pos.FromChars("a6") || board.EnPassantPos > pos.FromChars("h6") {
+			if board.EnPassantPos < FromChars("a6") || board.EnPassantPos > FromChars("h6") {
 				board.EnPassantPos = -1
 			}
-			if board.EnPassantPos > 0 && board.Fields[board.EnPassantPos+boardsize.Width] != piece.BlackPawn {
+			if board.EnPassantPos > 0 && board.FieldsF[PToFp(board.EnPassantPos+Width)] != piece.BlackPawn {
 				board.EnPassantPos = -1
 			}
 		} else {
-			if board.EnPassantPos < pos.FromChars("a3") || board.EnPassantPos > pos.FromChars("h3") {
+			if board.EnPassantPos < FromChars("a3") || board.EnPassantPos > FromChars("h3") {
 				board.EnPassantPos = -1
 			}
-			if board.EnPassantPos > 0 && board.Fields[board.EnPassantPos-boardsize.Width] != piece.WhitePawn {
+			if board.EnPassantPos > 0 && board.FieldsF[PToFp(board.EnPassantPos-Width)] != piece.WhitePawn {
 				board.EnPassantPos = -1
 			}
 		}

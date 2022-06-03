@@ -90,6 +90,6 @@ func TestSetField(t *testing.T) {
 	})
 
 	assertPanic(t, func() {
-		board.SetField(pos.Pos(len(board.Fields)), piece.WhiteQueen)
+		board.SetField(pos.Pos(pos.FieldCount), piece.WhiteQueen)
 	})
 }

@@ -1,16 +1,12 @@
 package pos
 
-import (
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
-)
-
 type Pos int
 
 func FromXY(x, y int) Pos {
-	if uint(x) >= boardsize.Width || uint(y) >= boardsize.Height {
+	if uint(x) >= Width || uint(y) >= Height {
 		return -1
 	}
-	return Pos(x + y*boardsize.Width)
+	return Pos(x + y*Width)
 }
 
 func FromChars(chars string) Pos {
@@ -18,15 +14,41 @@ func FromChars(chars string) Pos {
 		return -1
 	}
 	x := int(chars[0]) - 'a'
-	y := boardsize.Height + '0' - int(chars[1])
+	y := Height + '0' - int(chars[1])
 	return FromXY(x, y)
 }
 
 func (pos Pos) String() string {
-	if uint(pos) >= boardsize.FieldCount {
+	if uint(pos) >= FieldCount {
 		return "-"
 	}
-	file := pos%boardsize.Width + 'a'
-	rank := boardsize.Height - pos/boardsize.Height + '0'
+	file := pos%Width + 'a'
+	rank := Height - pos/Height + '0'
 	return string([]byte{byte(file), byte(rank)})
+}
+
+func PToF(pos int) int {
+	if pos < 0 {
+		return pos
+	}
+	return pos%Width + 1 + (pos/Width+1)*WidthF
+}
+
+func PToFb(pos byte) byte {
+	return byte(PToF(int(pos)))
+}
+
+func PToFp(pos Pos) int {
+	return PToF(int(pos))
+}
+
+func FToP(pos int) int {
+	if pos < 0 {
+		return pos
+	}
+	return pos%WidthF - 1 + (pos/WidthF-1)*Width
+}
+
+func FToPb(pos byte) int {
+	return FToP(int(pos))
 }

@@ -2,6 +2,7 @@ package yacboard
 
 import (
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
+	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"testing"
 )
 
@@ -22,7 +23,7 @@ func TestNew(t *testing.T) {
 		"RNBQKBNR"
 
 	for i := range checkFields {
-		f := board.Fields[i]
+		f := board.FieldsF[pos.PToF(i)]
 		if f == piece.Blocked {
 			t.Errorf("invalid blocked field at pos %d", i)
 		}

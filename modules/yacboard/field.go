@@ -1,23 +1,22 @@
 package yacboard
 
 import (
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
 
-func (board *YacBoard) GetField(pos pos.Pos) piece.Piece {
-	if uint(pos) >= boardsize.FieldCount {
+func (board *YacBoard) GetField(pos Pos) piece.Piece {
+	if uint(pos) >= FieldCount {
 		return piece.Blocked
 	}
-	return board.Fields[pos]
+	return board.FieldsF[PToFp(pos)]
 }
 
-func (board *YacBoard) SetField(pos pos.Pos, p piece.Piece) {
-	if uint(pos) >= boardsize.FieldCount {
+func (board *YacBoard) SetField(pos Pos, p piece.Piece) {
+	if uint(pos) >= FieldCount {
 		panic("argument out of range")
 	}
-	board.Fields[pos] = p
+	board.FieldsF[PToFp(pos)] = p
 
 	if p&piece.King == piece.King {
 		if p == piece.WhiteKing {

@@ -1,19 +1,18 @@
 package yacboard
 
 import (
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
 
 type YacBoard struct {
-	Fields [boardsize.FieldCount]piece.Piece
+	FieldsF [FieldCountF]piece.Piece
 
 	HalfmoveClock int
 	MoveNumber    int
-	WhiteKingPos  pos.Pos
-	BlackKingPos  pos.Pos
-	EnPassantPos  pos.Pos
+	WhiteKingPos  Pos
+	BlackKingPos  Pos
+	EnPassantPos  Pos
 
 	WhiteMove               bool
 	WhiteCanCastleKingside  bool

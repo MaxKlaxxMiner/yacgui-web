@@ -1,34 +1,33 @@
 package yacboard
 
 import (
-	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
 	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
 
 func (board *YacBoard) DoMove(move Move) {
-	p := board.Fields[move.FromPos]
+	p := board.FieldsF[move.FromPosF]
 
-	board.Fields[move.ToPos] = p
-	board.Fields[move.FromPos] = piece.None
+	board.FieldsF[move.ToPosF] = p
+	board.FieldsF[move.FromPosF] = piece.None
 
-	if Pos(move.ToPos) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant"?
+	if Pos(FToPb(move.ToPosF)) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant"?
 		if board.WhiteMove {
-			board.Fields[move.ToPos+Width] = piece.None
+			board.FieldsF[move.ToPosF+WidthF] = piece.None
 		} else {
-			board.Fields[move.ToPos-Width] = piece.None
+			board.FieldsF[move.ToPosF-WidthF] = piece.None
 		}
 	}
 
 	if move.PromotionPiece != piece.None { // pawn move with promotion?
-		board.Fields[move.ToPos] = move.PromotionPiece
+		board.FieldsF[move.ToPosF] = move.PromotionPiece
 	}
 
 	if p&piece.King != piece.None { // kingmove?
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(move.ToPos)
+			board.WhiteKingPos = Pos(FToPb(move.ToPosF))
 		} else {
-			board.BlackKingPos = Pos(move.ToPos)
+			board.BlackKingPos = Pos(FToPb(move.ToPosF))
 		}
 	}
 
@@ -40,41 +39,41 @@ func (board *YacBoard) DoMove(move Move) {
 		} else {
 			kingPos = board.BlackKingPos
 		}
-		if kingPos == Pos(move.ToPos) && (int(move.ToPos)-int(move.FromPos) == 2 || int(move.ToPos)-int(move.FromPos) == -2) {
+		if kingPos == Pos(FToPb(move.ToPosF)) && (move.ToPosF-move.FromPosF == 2 || int(move.ToPosF)-int(move.FromPosF) == -2) {
 			switch kingPos {
 			case 2:
-				board.Fields[0] = piece.None
-				board.Fields[3] = piece.BlackRook
+				board.FieldsF[PToF(0)] = piece.None
+				board.FieldsF[PToF(3)] = piece.BlackRook
 			case 6:
-				board.Fields[7] = piece.None
-				board.Fields[5] = piece.BlackRook
+				board.FieldsF[PToF(7)] = piece.None
+				board.FieldsF[PToF(5)] = piece.BlackRook
 			case 58:
-				board.Fields[56] = piece.None
-				board.Fields[59] = piece.WhiteRook
+				board.FieldsF[PToF(56)] = piece.None
+				board.FieldsF[PToF(59)] = piece.WhiteRook
 			case 62:
-				board.Fields[63] = piece.None
-				board.Fields[61] = piece.WhiteRook
+				board.FieldsF[PToF(63)] = piece.None
+				board.FieldsF[PToF(61)] = piece.WhiteRook
 			}
 		}
 	}
 
 	board.EnPassantPos = -1
-	if p&piece.Pawn != piece.None && (move.ToPos-move.FromPos == Width*2 || move.FromPos-move.ToPos == Width*2) {
-		board.EnPassantPos = Pos(int(move.FromPos)+int(move.ToPos)) / 2
+	if p&piece.Pawn != piece.None && (move.ToPosF-move.FromPosF == WidthF*2 || move.FromPosF-move.ToPosF == WidthF*2) {
+		board.EnPassantPos = Pos(FToP((int(move.FromPosF) + int(move.ToPosF)) / 2))
 		posX := board.EnPassantPos % Width
 		opPawn := false
 		if board.WhiteMove {
-			if posX > 0 && board.Fields[board.EnPassantPos-Width-1] == piece.BlackPawn {
+			if posX > 0 && board.FieldsF[PToFp(board.EnPassantPos-Width-1)] == piece.BlackPawn {
 				opPawn = true
 			}
-			if posX < Width-1 && board.Fields[board.EnPassantPos-Width+1] == piece.BlackPawn {
+			if posX < Width-1 && board.FieldsF[PToFp(board.EnPassantPos-Width+1)] == piece.BlackPawn {
 				opPawn = true
 			}
 		} else {
-			if posX > 0 && board.Fields[board.EnPassantPos+Width-1] == piece.WhitePawn {
+			if posX > 0 && board.FieldsF[PToFp(board.EnPassantPos+Width-1)] == piece.WhitePawn {
 				opPawn = true
 			}
-			if posX < Width-1 && board.Fields[board.EnPassantPos+Width+1] == piece.WhitePawn {
+			if posX < Width-1 && board.FieldsF[PToFp(board.EnPassantPos+Width+1)] == piece.WhitePawn {
 				opPawn = true
 			}
 		}
@@ -83,7 +82,7 @@ func (board *YacBoard) DoMove(move Move) {
 		}
 	}
 
-	switch move.FromPos {
+	switch FToPb(move.FromPosF) {
 	case 0:
 		board.BlackCanCastleQueenside = false
 	case 4:
@@ -99,7 +98,7 @@ func (board *YacBoard) DoMove(move Move) {
 	case 63:
 		board.WhiteCanCastleKingside = false
 	}
-	switch move.ToPos {
+	switch FToPb(move.ToPosF) {
 	case 0:
 		board.BlackCanCastleQueenside = false
 	case 7:
@@ -121,46 +120,46 @@ func (board *YacBoard) DoMove(move Move) {
 }
 
 func (board *YacBoard) DoMoveBackward(move Move, lastBoardInfos BoardInfo) {
-	p := board.Fields[move.ToPos]
-	board.Fields[move.FromPos] = p
-	board.Fields[move.ToPos] = move.CapturePiece
+	p := board.FieldsF[move.ToPosF]
+	board.FieldsF[move.FromPosF] = p
+	board.FieldsF[move.ToPosF] = move.CapturePiece
 
 	if move.PromotionPiece != piece.None {
-		board.Fields[move.FromPos] = (p & piece.Colors) | piece.Pawn
+		board.FieldsF[move.FromPosF] = (p & piece.Colors) | piece.Pawn
 	}
 
 	if p&piece.Pawn != piece.None &&
-		move.FromPos%Width != move.ToPos%Width &&
+		move.FromPosF%WidthF != move.ToPosF%WidthF &&
 		move.CapturePiece == piece.None {
 		if board.WhiteMove {
-			board.Fields[(uint)(lastBoardInfos&EnPassantMask)-Width] = piece.WhitePawn
+			board.FieldsF[PToF((int)(lastBoardInfos&EnPassantMask)-Width)] = piece.WhitePawn
 		} else {
-			board.Fields[(uint)(lastBoardInfos&EnPassantMask)+Width] = piece.BlackPawn
+			board.FieldsF[PToF((int)(lastBoardInfos&EnPassantMask)+Width)] = piece.BlackPawn
 		}
 	}
 
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(move.FromPos)
+			board.WhiteKingPos = Pos(FToPb(move.FromPosF))
 		} else {
-			board.BlackKingPos = Pos(move.FromPos)
+			board.BlackKingPos = Pos(FToPb(move.FromPosF))
 		}
 
-		posXdif := int(move.FromPos%Width) - int(move.ToPos%Width)
+		posXdif := int(move.FromPosF%WidthF) - int(move.ToPosF%WidthF)
 		if posXdif > 1 || posXdif < -1 {
-			switch move.ToPos {
+			switch FToPb(move.ToPosF) {
 			case 2: // black O-O-O
-				board.Fields[0] = piece.BlackRook
-				board.Fields[3] = piece.None
+				board.FieldsF[PToF(0)] = piece.BlackRook
+				board.FieldsF[PToF(3)] = piece.None
 			case 6: // black O-O
-				board.Fields[7] = piece.BlackRook
-				board.Fields[5] = piece.None
+				board.FieldsF[PToF(7)] = piece.BlackRook
+				board.FieldsF[PToF(5)] = piece.None
 			case 58: // white O-O-O
-				board.Fields[56] = piece.WhiteRook
-				board.Fields[59] = piece.None
+				board.FieldsF[PToF(56)] = piece.WhiteRook
+				board.FieldsF[PToF(59)] = piece.None
 			case 62: // white O-O
-				board.Fields[63] = piece.WhiteRook
-				board.Fields[61] = piece.None
+				board.FieldsF[PToF(63)] = piece.WhiteRook
+				board.FieldsF[PToF(61)] = piece.None
 			}
 		}
 	}

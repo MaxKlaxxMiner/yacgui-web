@@ -1,7 +1,6 @@
 package yacboard
 
 import (
-	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/boardsize"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
 	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
@@ -15,28 +14,28 @@ func (board *YacBoard) invertedMoveColor() piece.Piece {
 }
 
 func (board *YacBoard) simpleMoveCheck(move Move) bool {
-	p := board.Fields[move.FromPos]
+	p := board.FieldsF[move.FromPosF]
 
-	board.Fields[move.ToPos] = p
-	board.Fields[move.FromPos] = piece.None
+	board.FieldsF[move.ToPosF] = p
+	board.FieldsF[move.FromPosF] = piece.None
 
-	if Pos(move.ToPos) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant"?
+	if Pos(FToPb(move.ToPosF)) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant"?
 		if board.WhiteMove {
-			board.Fields[move.ToPos+Width] = piece.None
+			board.FieldsF[move.ToPosF+WidthF] = piece.None
 		} else {
-			board.Fields[move.ToPos-Width] = piece.None
+			board.FieldsF[move.ToPosF-WidthF] = piece.None
 		}
 	}
 
 	if move.PromotionPiece != piece.None {
-		board.Fields[move.ToPos] = move.PromotionPiece
+		board.FieldsF[move.ToPosF] = move.PromotionPiece
 	}
 
 	if p&piece.King != piece.None { // kingmove?
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(move.ToPos)
+			board.WhiteKingPos = Pos(FToPb(move.ToPosF))
 		} else {
-			board.BlackKingPos = Pos(move.ToPos)
+			board.BlackKingPos = Pos(FToPb(move.ToPosF))
 		}
 	}
 
@@ -49,40 +48,40 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 			kingPos = board.BlackKingPos
 		}
 		if board.isChecked(kingPos, board.invertedMoveColor()) {
-			board.Fields[move.ToPos] = move.CapturePiece
-			board.Fields[move.FromPos] = p
-			if Pos(move.ToPos) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant" ?
+			board.FieldsF[move.ToPosF] = move.CapturePiece
+			board.FieldsF[move.FromPosF] = p
+			if Pos(FToPb(move.ToPosF)) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant" ?
 				if board.WhiteMove {
-					board.Fields[move.ToPos+Width] = piece.BlackPawn
+					board.FieldsF[move.ToPosF+WidthF] = piece.BlackPawn
 				} else {
-					board.Fields[move.ToPos-Width] = piece.WhitePawn
+					board.FieldsF[move.ToPosF-WidthF] = piece.WhitePawn
 				}
 			}
 			if p&piece.King != piece.None {
 				if p == piece.WhiteKing {
-					board.WhiteKingPos = Pos(move.FromPos)
+					board.WhiteKingPos = Pos(FToPb(move.FromPosF))
 				} else {
-					board.BlackKingPos = Pos(move.FromPos)
+					board.BlackKingPos = Pos(FToPb(move.FromPosF))
 				}
 			}
 			return false
 		}
 	}
 
-	board.Fields[move.ToPos] = move.CapturePiece
-	board.Fields[move.FromPos] = p
-	if Pos(move.ToPos) == board.EnPassantPos && p&piece.Pawn != piece.None {
+	board.FieldsF[move.ToPosF] = move.CapturePiece
+	board.FieldsF[move.FromPosF] = p
+	if Pos(FToPb(move.ToPosF)) == board.EnPassantPos && p&piece.Pawn != piece.None {
 		if board.WhiteMove {
-			board.Fields[move.ToPos+Width] = piece.BlackPawn
+			board.FieldsF[move.ToPosF+WidthF] = piece.BlackPawn
 		} else {
-			board.Fields[move.ToPos-Width] = piece.WhitePawn
+			board.FieldsF[move.ToPosF-WidthF] = piece.WhitePawn
 		}
 	}
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(move.FromPos)
+			board.WhiteKingPos = Pos(FToPb(move.FromPosF))
 		} else {
-			board.BlackKingPos = Pos(move.FromPos)
+			board.BlackKingPos = Pos(FToPb(move.FromPosF))
 		}
 	}
 	return true
@@ -99,8 +98,8 @@ func (board *YacBoard) MoveCheck(move Move) bool {
 
 func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 	var mi byte = 0
-	for pos := len(b.Fields) - 1; pos >= 0; pos-- {
-		field := b.Fields[pos]
+	for pos := FieldCount - 1; pos >= 0; pos-- {
+		field := b.FieldsF[PToF(pos)]
 		if field&piece.Colors != piece.White { // wrong color / no p?
 			continue
 		}
@@ -108,8 +107,8 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 		posY := pos / Width
 
 		if field == piece.WhitePawn && pos < Width*2 {
-			if b.Fields[pos-Width] == piece.None {
-				move := Move{FromPos: byte(pos), ToPos: byte(pos - Width), CapturePiece: b.Fields[pos-Width], PromotionPiece: piece.WhiteQueen}
+			if b.FieldsF[PToF(pos-Width)] == piece.None {
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos - Width)), CapturePiece: b.FieldsF[PToF(pos-Width)], PromotionPiece: piece.WhiteQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -124,8 +123,8 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					mi++
 				}
 			}
-			if posX > 0 && b.Fields[pos-(Width+1)]&piece.Colors == piece.Black { // capture left-top
-				move := Move{FromPos: byte(pos), ToPos: byte(pos - (Width + 1)), CapturePiece: b.Fields[pos-(Width+1)], PromotionPiece: piece.WhiteQueen}
+			if posX > 0 && b.FieldsF[PToF(pos-(Width+1))]&piece.Colors == piece.Black { // capture left-top
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos - (Width + 1))), CapturePiece: b.FieldsF[PToF(pos-(Width+1))], PromotionPiece: piece.WhiteQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -140,8 +139,8 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					mi++
 				}
 			}
-			if posX < Width-1 && b.Fields[pos-(Width-1)]&piece.Colors == piece.Black { // capture right-top
-				move := Move{FromPos: byte(pos), ToPos: byte(pos - (Width - 1)), CapturePiece: b.Fields[pos-(Width-1)], PromotionPiece: piece.WhiteQueen}
+			if posX < Width-1 && b.FieldsF[PToF(pos-(Width-1))]&piece.Colors == piece.Black { // capture right-top
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos - (Width - 1))), CapturePiece: b.FieldsF[PToF(pos-(Width-1))], PromotionPiece: piece.WhiteQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -162,24 +161,24 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				var movePos int
 				if posX > 0 {
 					movePos = pos - (Width + 1) // left-up
-					if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 0 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos - 1 // left
-					if b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width - 1) // left-down
-					if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -188,24 +187,24 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if posX < Width-1 {
 					movePos = pos - (Width - 1) // right-up
-					if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 0 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + 1 // right
-					if b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width + 1) // right-down
-					if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -213,16 +212,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 				}
 				movePos = pos - Width // up
-				if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posY > 0 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 				}
 				movePos = pos + Width // down
-				if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -230,15 +229,15 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if pos == 60 {
 					if b.WhiteCanCastleQueenside &&
-						b.Fields[57] == piece.None && b.Fields[58] == piece.None && b.Fields[59] == piece.None &&
+						b.FieldsF[PToF(57)] == piece.None && b.FieldsF[PToF(58)] == piece.None && b.FieldsF[PToF(59)] == piece.None &&
 						!b.isChecked(58, piece.Black) && !b.isChecked(59, piece.Black) && !b.isChecked(60, piece.Black) {
-						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
+						mv[mi] = Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos) - 2)}
 						mi++
 					}
 					if b.WhiteCanCastleKingside &&
-						b.Fields[61] == piece.None && b.Fields[62] == piece.None &&
+						b.FieldsF[PToF(61)] == piece.None && b.FieldsF[PToF(62)] == piece.None &&
 						!b.isChecked(60, piece.Black) && !b.isChecked(61, piece.Black) && !b.isChecked(62, piece.Black) {
-						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
+						mv[mi] = Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos) + 2)}
 						mi++
 					}
 				}
@@ -250,11 +249,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if (f & piece.White) != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -269,11 +268,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -288,11 +287,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -307,11 +306,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -326,11 +325,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -345,11 +344,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -364,11 +363,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -383,11 +382,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -404,11 +403,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if (f & piece.White) != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -423,11 +422,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -442,11 +441,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -461,11 +460,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -482,11 +481,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -501,11 +500,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -520,11 +519,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -539,11 +538,11 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.White != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -557,16 +556,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				var movePos int
 				if posX > 0 {
 					movePos = pos - (Width*2 + 1) // -1, -2
-					if posY > 1 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width*2 - 1) // -1, +2
-					if posY < Height-2 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-2 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -574,16 +573,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 					if posX > 1 {
 						movePos = pos - (Width + 2) // -2, -1
-						if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY > 0 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
 							}
 						}
 						movePos = pos + (Width - 2) // -2, +1
-						if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
@@ -593,16 +592,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if posX < Width-1 {
 					movePos = pos - (Width*2 - 1) // +1, -2
-					if posY > 1 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width*2 + 1) // +1, +2
-					if posY < Height-2 && b.Fields[movePos]&piece.White == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-2 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -610,16 +609,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 					if posX < Width-2 {
 						movePos = pos - (Width - 2) // +2, +1
-						if posY > 0 && b.Fields[movePos]&piece.White == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY > 0 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
 							}
 						}
 						movePos = pos + (Width + 2) // +2, -1
-						if posY < Height-1 && b.Fields[movePos]&piece.White == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.White == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
@@ -634,15 +633,15 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				var movePos int
 				movePos = pos - Width
-				if b.Fields[movePos] == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if b.FieldsF[PToF(movePos)] == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 					movePos = pos - Width*2
-					if posY == Height-2 && b.Fields[movePos] == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY == Height-2 && b.FieldsF[PToF(movePos)] == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -650,16 +649,16 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 				}
 				movePos = pos - (Width + 1)
-				if posX > 0 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.Black) { // capture left-top
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posX > 0 && (int(b.EnPassantPos) == movePos || b.FieldsF[PToF(movePos)]&piece.Colors == piece.Black) { // capture left-top
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 				}
 				movePos = pos - (Width - 1)
-				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.Black) { // capture right-top
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.FieldsF[PToF(movePos)]&piece.Colors == piece.Black) { // capture right-top
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -673,8 +672,8 @@ func getWhiteMoves(b *YacBoard, mv *[256]Move) byte {
 
 func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 	var mi byte = 0
-	for pos := 0; pos < len(b.Fields); pos++ {
-		field := b.Fields[pos]
+	for pos := 0; pos < FieldCount; pos++ {
+		field := b.FieldsF[PToF(pos)]
 		if field&piece.Colors != piece.Black { // wrong color / no p?
 			continue
 		}
@@ -682,8 +681,8 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 		posY := pos / Width
 
 		if field == piece.BlackPawn && pos >= Height*Width-Width*2 {
-			if b.Fields[pos+Width] == piece.None {
-				move := Move{FromPos: byte(pos), ToPos: byte(pos + Width), CapturePiece: b.Fields[pos+Width], PromotionPiece: piece.BlackQueen}
+			if b.FieldsF[PToF(pos+Width)] == piece.None {
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos + Width)), CapturePiece: b.FieldsF[PToF(pos+Width)], PromotionPiece: piece.BlackQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -698,8 +697,8 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					mi++
 				}
 			}
-			if posX > 0 && b.Fields[pos+(Width-1)]&piece.Colors == piece.White { // capture left-bottom
-				move := Move{FromPos: byte(pos), ToPos: byte(pos + (Width - 1)), CapturePiece: b.Fields[pos+(Width-1)], PromotionPiece: piece.BlackQueen}
+			if posX > 0 && b.FieldsF[PToF(pos+(Width-1))]&piece.Colors == piece.White { // capture left-bottom
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos + (Width - 1))), CapturePiece: b.FieldsF[PToF(pos+(Width-1))], PromotionPiece: piece.BlackQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -714,8 +713,8 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					mi++
 				}
 			}
-			if posX < Width-1 && b.Fields[pos+(Width+1)]&piece.Colors == piece.White { // capture right-bottom
-				move := Move{FromPos: byte(pos), ToPos: byte(pos + (Width + 1)), CapturePiece: b.Fields[pos+(Width+1)], PromotionPiece: piece.BlackQueen}
+			if posX < Width-1 && b.FieldsF[PToF(pos+(Width+1))]&piece.Colors == piece.White { // capture right-bottom
+				move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos + (Width + 1))), CapturePiece: b.FieldsF[PToF(pos+(Width+1))], PromotionPiece: piece.BlackQueen}
 				if b.simpleMoveCheck(move) {
 					mv[mi] = move
 					mi++
@@ -736,24 +735,24 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				var movePos int
 				if posX > 0 {
 					movePos = pos - (Width + 1) // left-up
-					if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 0 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos - 1 // left
-					if b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width - 1) // left-down
-					if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -762,24 +761,24 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if posX < Width-1 {
 					movePos = pos - (Width - 1) // right-up
-					if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 0 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + 1 // right
-					if b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width + 1) // right-down
-					if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -787,16 +786,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 				}
 				movePos = pos - Width // up
-				if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posY > 0 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 				}
 				movePos = pos + Width // down
-				if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -804,15 +803,15 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if pos == 4 {
 					if b.BlackCanCastleQueenside &&
-						b.Fields[1] == piece.None && b.Fields[2] == piece.None && b.Fields[3] == piece.None &&
+						b.FieldsF[PToF(1)] == piece.None && b.FieldsF[PToF(2)] == piece.None && b.FieldsF[PToF(3)] == piece.None &&
 						!b.isChecked(2, piece.White) && !b.isChecked(3, piece.White) && !b.isChecked(4, piece.White) {
-						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) - 2}
+						mv[mi] = Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos) - 2)}
 						mi++
 					}
 					if b.BlackCanCastleKingside &&
-						b.Fields[5] == piece.None && b.Fields[6] == piece.None &&
+						b.FieldsF[PToF(5)] == piece.None && b.FieldsF[PToF(6)] == piece.None &&
 						!b.isChecked(4, piece.White) && !b.isChecked(5, piece.White) && !b.isChecked(6, piece.White) {
-						mv[mi] = Move{FromPos: byte(pos), ToPos: byte(pos) + 2}
+						mv[mi] = Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(pos) + 2)}
 						mi++
 					}
 				}
@@ -824,11 +823,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if (f & piece.Black) != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -843,11 +842,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -862,11 +861,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -881,11 +880,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -900,11 +899,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -919,11 +918,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -938,11 +937,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -957,11 +956,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -978,11 +977,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if (f & piece.Black) != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -997,11 +996,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1016,11 +1015,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1035,11 +1034,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + Width*i
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1056,11 +1055,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1075,11 +1074,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1094,11 +1093,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos - (Width*i - i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1113,11 +1112,11 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 						break
 					}
 					p := pos + (Width*i + i)
-					f := b.Fields[p]
+					f := b.FieldsF[PToF(p)]
 					if f&piece.Black != piece.None {
 						break
 					}
-					move := Move{FromPos: byte(pos), ToPos: byte(p), CapturePiece: f}
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(p)), CapturePiece: f}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
@@ -1131,16 +1130,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				var movePos int
 				if posX > 0 {
 					movePos = pos - (Width*2 + 1) // -1, -2
-					if posY > 1 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width*2 - 1) // -1, +2
-					if posY < Height-2 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-2 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -1148,16 +1147,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 					if posX > 1 {
 						movePos = pos - (Width + 2) // -2, -1
-						if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY > 0 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
 							}
 						}
 						movePos = pos + (Width - 2) // -2, +1
-						if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
@@ -1167,16 +1166,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				if posX < Width-1 {
 					movePos = pos - (Width*2 - 1) // +1, -2
-					if posY > 1 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY > 1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
 						}
 					}
 					movePos = pos + (Width*2 + 1) // +1, +2
-					if posY < Height-2 && b.Fields[movePos]&piece.Black == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY < Height-2 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -1184,16 +1183,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 					if posX < Width-2 {
 						movePos = pos - (Width - 2) // +2, +1
-						if posY > 0 && b.Fields[movePos]&piece.Black == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY > 0 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
 							}
 						}
 						movePos = pos + (Width + 2) // +2, -1
-						if posY < Height-1 && b.Fields[movePos]&piece.Black == piece.None {
-							move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+						if posY < Height-1 && b.FieldsF[PToF(movePos)]&piece.Black == piece.None {
+							move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 							if b.simpleMoveCheck(move) {
 								mv[mi] = move
 								mi++
@@ -1208,15 +1207,15 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 				}
 				var movePos int
 				movePos = pos + Width
-				if b.Fields[movePos] == piece.None {
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if b.FieldsF[PToF(movePos)] == piece.None {
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 					movePos = pos + Width*2
-					if posY == 1 && b.Fields[movePos] == piece.None {
-						move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+					if posY == 1 && b.FieldsF[PToF(movePos)] == piece.None {
+						move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 						if b.simpleMoveCheck(move) {
 							mv[mi] = move
 							mi++
@@ -1224,16 +1223,16 @@ func getBlackMoves(b *YacBoard, mv *[256]Move) byte {
 					}
 				}
 				movePos = pos + (Width - 1)
-				if posX > 0 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.White) { // capture left-top
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posX > 0 && (int(b.EnPassantPos) == movePos || b.FieldsF[PToF(movePos)]&piece.Colors == piece.White) { // capture left-top
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++
 					}
 				}
 				movePos = pos + (Width + 1)
-				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.Fields[movePos]&piece.Colors == piece.White) { // capture right-top
-					move := Move{FromPos: byte(pos), ToPos: byte(movePos), CapturePiece: b.Fields[movePos]}
+				if posX < Width-1 && (int(b.EnPassantPos) == movePos || b.FieldsF[PToF(movePos)]&piece.Colors == piece.White) { // capture right-top
+					move := Move{FromPosF: PToFb(byte(pos)), ToPosF: PToFb(byte(movePos)), CapturePiece: b.FieldsF[PToF(movePos)]}
 					if b.simpleMoveCheck(move) {
 						mv[mi] = move
 						mi++

@@ -2,7 +2,7 @@ package yacboard
 
 import (
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"testing"
 )
 
@@ -35,7 +35,7 @@ func TestMove(t *testing.T) {
 		t.Errorf("invalid move-string: \"%s\", expected: \"%s\"", str, "-")
 	}
 
-	m2 := Move{FromPos: byte(pos.FromChars("e7")), ToPos: byte(pos.FromChars("e5"))}
+	m2 := Move{FromPosF: PToFb(byte(FromChars("e7"))), ToPosF: PToFb(byte(FromChars("e5")))}
 	if !m2.IsValid(nil) {
 		t.Errorf("move should valid: %s", m2)
 	}
@@ -43,7 +43,7 @@ func TestMove(t *testing.T) {
 		t.Errorf("invalid move marked as valid: %s", m2)
 	}
 
-	m1 := Move{FromPos: byte(pos.FromChars("e2")), ToPos: byte(pos.FromChars("e4"))}
+	m1 := Move{FromPosF: PToFb(byte(FromChars("e2"))), ToPosF: PToFb(byte(FromChars("e4")))}
 	testGetFENCheck(t, &board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	testDoMoveCheck(t, &board, m1, "e2-e4")
 	testGetFENCheck(t, &board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1")
@@ -55,16 +55,16 @@ func TestMove(t *testing.T) {
 		move    Move
 		nextFEN string
 	}{
-		{"d2-d4", Move{FromPos: byte(pos.FromChars("d2")), ToPos: byte(pos.FromChars("d4"))}, "rnbqkbnr/pppp1ppp/8/4p3/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2"},
-		{"e5xd4 (xP)", Move{FromPos: byte(pos.FromChars("e5")), ToPos: byte(pos.FromChars("d4")), CapturePiece: piece.WhitePawn}, "rnbqkbnr/pppp1ppp/8/8/3pP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"},
-		{"c2-c4", Move{FromPos: byte(pos.FromChars("c2")), ToPos: byte(pos.FromChars("c4"))}, "rnbqkbnr/pppp1ppp/8/8/2PpP3/8/PP3PPP/RNBQKBNR b KQkq c3 0 3"},
-		{"d4-c3", Move{FromPos: byte(pos.FromChars("d4")), ToPos: byte(pos.FromChars("c3"))}, "rnbqkbnr/pppp1ppp/8/8/4P3/2p5/PP3PPP/RNBQKBNR w KQkq - 0 4"}, // no "CapturePiece" by en passant-moves
-		{"f1-c4", Move{FromPos: byte(pos.FromChars("f1")), ToPos: byte(pos.FromChars("c4"))}, "rnbqkbnr/pppp1ppp/8/8/2B1P3/2p5/PP3PPP/RNBQK1NR b KQkq - 1 4"},
-		{"c3xb2 (xP)", Move{FromPos: byte(pos.FromChars("c3")), ToPos: byte(pos.FromChars("b2")), CapturePiece: piece.WhitePawn}, "rnbqkbnr/pppp1ppp/8/8/2B1P3/8/Pp3PPP/RNBQK1NR w KQkq - 0 5"},
-		{"c1-g5", Move{FromPos: byte(pos.FromChars("c1")), ToPos: byte(pos.FromChars("g5"))}, "rnbqkbnr/pppp1ppp/8/6B1/2B1P3/8/Pp3PPP/RN1QK1NR b KQkq - 1 5"},
-		{"b2xa1->q (xR)", Move{FromPos: byte(pos.FromChars("b2")), ToPos: byte(pos.FromChars("a1")), CapturePiece: piece.WhiteRook, PromotionPiece: piece.BlackQueen}, "rnbqkbnr/pppp1ppp/8/6B1/2B1P3/8/P4PPP/qN1QK1NR w Kkq - 0 6"},
-		{"g5xd8 (xq)", Move{FromPos: byte(pos.FromChars("g5")), ToPos: byte(pos.FromChars("d8")), CapturePiece: piece.BlackQueen}, "rnbBkbnr/pppp1ppp/8/8/2B1P3/8/P4PPP/qN1QK1NR b Kkq - 0 6"},
-		{"e8xd8 (xB)", Move{FromPos: byte(pos.FromChars("e8")), ToPos: byte(pos.FromChars("d8")), CapturePiece: piece.WhiteBishop}, "rnbk1bnr/pppp1ppp/8/8/2B1P3/8/P4PPP/qN1QK1NR w K - 0 7"},
+		{"d2-d4", Move{FromPosF: PToFb(byte(FromChars("d2"))), ToPosF: PToFb(byte(FromChars("d4")))}, "rnbqkbnr/pppp1ppp/8/4p3/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2"},
+		{"e5xd4 (xP)", Move{FromPosF: PToFb(byte(FromChars("e5"))), ToPosF: PToFb(byte(FromChars("d4"))), CapturePiece: piece.WhitePawn}, "rnbqkbnr/pppp1ppp/8/8/3pP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"},
+		{"c2-c4", Move{FromPosF: PToFb(byte(FromChars("c2"))), ToPosF: PToFb(byte(FromChars("c4")))}, "rnbqkbnr/pppp1ppp/8/8/2PpP3/8/PP3PPP/RNBQKBNR b KQkq c3 0 3"},
+		{"d4-c3", Move{FromPosF: PToFb(byte(FromChars("d4"))), ToPosF: PToFb(byte(FromChars("c3")))}, "rnbqkbnr/pppp1ppp/8/8/4P3/2p5/PP3PPP/RNBQKBNR w KQkq - 0 4"}, // no "CapturePiece" by en passant-moves
+		{"f1-c4", Move{FromPosF: PToFb(byte(FromChars("f1"))), ToPosF: PToFb(byte(FromChars("c4")))}, "rnbqkbnr/pppp1ppp/8/8/2B1P3/2p5/PP3PPP/RNBQK1NR b KQkq - 1 4"},
+		{"c3xb2 (xP)", Move{FromPosF: PToFb(byte(FromChars("c3"))), ToPosF: PToFb(byte(FromChars("b2"))), CapturePiece: piece.WhitePawn}, "rnbqkbnr/pppp1ppp/8/8/2B1P3/8/Pp3PPP/RNBQK1NR w KQkq - 0 5"},
+		{"c1-g5", Move{FromPosF: PToFb(byte(FromChars("c1"))), ToPosF: PToFb(byte(FromChars("g5")))}, "rnbqkbnr/pppp1ppp/8/6B1/2B1P3/8/Pp3PPP/RN1QK1NR b KQkq - 1 5"},
+		{"b2xa1->q (xR)", Move{FromPosF: PToFb(byte(FromChars("b2"))), ToPosF: PToFb(byte(FromChars("a1"))), CapturePiece: piece.WhiteRook, PromotionPiece: piece.BlackQueen}, "rnbqkbnr/pppp1ppp/8/6B1/2B1P3/8/P4PPP/qN1QK1NR w Kkq - 0 6"},
+		{"g5xd8 (xq)", Move{FromPosF: PToFb(byte(FromChars("g5"))), ToPosF: PToFb(byte(FromChars("d8"))), CapturePiece: piece.BlackQueen}, "rnbBkbnr/pppp1ppp/8/8/2B1P3/8/P4PPP/qN1QK1NR b Kkq - 0 6"},
+		{"e8xd8 (xB)", Move{FromPosF: PToFb(byte(FromChars("e8"))), ToPosF: PToFb(byte(FromChars("d8"))), CapturePiece: piece.WhiteBishop}, "rnbk1bnr/pppp1ppp/8/8/2B1P3/8/P4PPP/qN1QK1NR w K - 0 7"},
 	}
 
 	for _, m := range table {

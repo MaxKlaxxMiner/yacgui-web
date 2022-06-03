@@ -3,18 +3,18 @@ package yacboard
 import (
 	"fmt"
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 )
 
 type Move struct {
 	PromotionPiece piece.Piece
 	CapturePiece   piece.Piece
-	FromPos        byte
-	ToPos          byte
+	FromPosF       byte
+	ToPosF         byte
 }
 
 func (m Move) IsValid(optionalBoard *YacBoard) bool {
-	if m.FromPos == m.ToPos {
+	if m.FromPosF == m.ToPosF {
 		return false
 	}
 	if optionalBoard == nil {
@@ -28,9 +28,9 @@ func (m Move) String() string {
 		return "-"
 	}
 
-	result := fmt.Sprintf("%s-%s", pos.Pos(m.FromPos), pos.Pos(m.ToPos))
+	result := fmt.Sprintf("%s-%s", Pos(FToPb(m.FromPosF)), Pos(FToPb(m.ToPosF)))
 	if m.CapturePiece != piece.None {
-		result = fmt.Sprintf("%sx%s", pos.Pos(m.FromPos), pos.Pos(m.ToPos))
+		result = fmt.Sprintf("%sx%s", Pos(FToPb(m.FromPosF)), Pos(FToPb(m.ToPosF)))
 	}
 
 	if m.PromotionPiece != piece.None {

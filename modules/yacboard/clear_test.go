@@ -17,6 +17,20 @@ func TestClear(t *testing.T) {
 	}
 
 	cleanBoard := YacBoard{MoveNumber: 1, WhiteKingPos: -1, BlackKingPos: -1, EnPassantPos: -1, WhiteMove: true}
+
+	for x := 0; x < pos.WidthF; x++ {
+		y := 0
+		cleanBoard.FieldsF[x+y*pos.WidthF] = piece.Blocked
+		y = pos.HeightF - 1
+		cleanBoard.FieldsF[x+y*pos.WidthF] = piece.Blocked
+	}
+	for y := 0; y < pos.HeightF; y++ {
+		x := 0
+		cleanBoard.FieldsF[x+y*pos.WidthF] = piece.Blocked
+		x = pos.WidthF - 1
+		cleanBoard.FieldsF[x+y*pos.WidthF] = piece.Blocked
+	}
+
 	if cleanBoard != board {
 		t.Errorf("invalid clean board")
 	}
@@ -26,7 +40,7 @@ func TestClear(t *testing.T) {
 		t.Errorf("unexpected comparing")
 	}
 
-	board.Fields[pos.FromChars("e4")] = piece.None
+	board.FieldsF[pos.PToFp(pos.FromChars("e4"))] = piece.None
 	if cleanBoard != board {
 		t.Errorf("invalid clean board")
 	}

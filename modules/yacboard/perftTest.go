@@ -107,21 +107,21 @@ func perftTestFEN(fen string, nodeCounter []int64) {
 		}
 	}
 
-	goBitsBoard := goBit.BoardStruct{}
-	goBitsBoard.ParseFEN(fen)
-	fmt.Println("--- goBits ---")
-	for level := 1; level <= len(nodeCounter); level++ {
-		fmt.Print("Level: ", level, " / ", len(nodeCounter), " Nodes: ")
-		tim := time.Now()
-		count := int64(moveCounter2(&goBitsBoard, level))
-		fmt.Printf("%s (%s ms)", numFormat(count), numFormat(time.Since(tim).Milliseconds()))
-		if count == nodeCounter[len(nodeCounter)-level] {
-			fmt.Println(" [ok]")
-		} else {
-			fmt.Printf(" [FAIL] %d != %d\n", count, nodeCounter[len(nodeCounter)-level])
-			panic("perft fail")
-		}
-	}
+	//goBitsBoard := goBit.BoardStruct{}
+	//goBitsBoard.ParseFEN(fen)
+	//fmt.Println("--- goBits ---")
+	//for level := 1; level <= len(nodeCounter); level++ {
+	//	fmt.Print("Level: ", level, " / ", len(nodeCounter), " Nodes: ")
+	//	tim := time.Now()
+	//	count := int64(moveCounter2(&goBitsBoard, level))
+	//	fmt.Printf("%s (%s ms)", numFormat(count), numFormat(time.Since(tim).Milliseconds()))
+	//	if count == nodeCounter[len(nodeCounter)-level] {
+	//		fmt.Println(" [ok]")
+	//	} else {
+	//		fmt.Printf(" [FAIL] %d != %d\n", count, nodeCounter[len(nodeCounter)-level])
+	//		panic("perft fail")
+	//	}
+	//}
 }
 
 func PerftTest(trim int) {
