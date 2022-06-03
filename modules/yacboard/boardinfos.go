@@ -1,6 +1,6 @@
 package yacboard
 
-import "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+import . "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 
 type BoardInfo uint32
 
@@ -51,7 +51,7 @@ func (board *YacBoard) GetBoardInfo() BoardInfo {
 }
 
 func (board *YacBoard) SetBoardInfo(boardInfo BoardInfo) {
-	board.EnPassantPosF = pos.Pos(int8(uint8(boardInfo & EnPassantMask)))
+	board.EnPassantPosF = PosF(int8(uint8(boardInfo & EnPassantMask)))
 	board.WhiteCanCastleKingside = (boardInfo & WhiteCanCastleKingside) != BoardInfoNone
 	board.WhiteCanCastleQueenside = (boardInfo & WhiteCanCastleQueenside) != BoardInfoNone
 	board.BlackCanCastleKingside = (boardInfo & BlackCanCastleKingside) != BoardInfoNone

@@ -1,6 +1,7 @@
 package pos
 
 type Pos int
+type PosF int
 
 func FromXY(x, y int) Pos {
 	if uint(x) >= Width || uint(y) >= Height {
@@ -38,8 +39,8 @@ func PToFb(pos byte) byte {
 	return byte(PToF(int(pos)))
 }
 
-func PToFp(pos Pos) Pos {
-	return Pos(PToF(int(pos)))
+func PToFp(pos Pos) PosF {
+	return PosF(PToF(int(pos)))
 }
 
 func FToP(pos int) int {
@@ -53,6 +54,6 @@ func FToPb(pos byte) int {
 	return FToP(int(pos))
 }
 
-func FToPp(pos Pos) Pos {
+func FToPp(pos PosF) Pos {
 	return Pos(FToP(int(pos)))
 }

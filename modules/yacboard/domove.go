@@ -11,7 +11,7 @@ func (board *YacBoard) DoMove(move Move) {
 	board.FieldsF[move.ToPosF] = p
 	board.FieldsF[move.FromPosF] = piece.None
 
-	if Pos(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant"?
+	if PosF(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant"?
 		if board.WhiteMove {
 			board.FieldsF[move.ToPosF+WidthF] = piece.None
 		} else {
@@ -25,9 +25,9 @@ func (board *YacBoard) DoMove(move Move) {
 
 	if p&piece.King != piece.None { // kingmove?
 		if p == piece.WhiteKing {
-			board.WhiteKingPosF = Pos(move.ToPosF)
+			board.WhiteKingPosF = PosF(move.ToPosF)
 		} else {
-			board.BlackKingPosF = Pos(move.ToPosF)
+			board.BlackKingPosF = PosF(move.ToPosF)
 		}
 	}
 
@@ -59,7 +59,7 @@ func (board *YacBoard) DoMove(move Move) {
 
 	board.EnPassantPosF = -1
 	if p&piece.Pawn != piece.None && (move.ToPosF-move.FromPosF == WidthF*2 || move.FromPosF-move.ToPosF == WidthF*2) {
-		board.EnPassantPosF = Pos((int(move.FromPosF) + int(move.ToPosF)) / 2)
+		board.EnPassantPosF = PosF((move.FromPosF + move.ToPosF) / 2)
 		posX := board.EnPassantPosF%WidthF + 1
 		opPawn := false
 		if board.WhiteMove {
@@ -140,9 +140,9 @@ func (board *YacBoard) DoMoveBackward(move Move, lastBoardInfos BoardInfo) {
 
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPosF = Pos(move.FromPosF)
+			board.WhiteKingPosF = PosF(move.FromPosF)
 		} else {
-			board.BlackKingPosF = Pos(move.FromPosF)
+			board.BlackKingPosF = PosF(move.FromPosF)
 		}
 
 		posXdif := int(move.FromPosF%WidthF) - int(move.ToPosF%WidthF)
