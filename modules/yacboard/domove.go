@@ -25,9 +25,9 @@ func (board *YacBoard) DoMove(move Move) {
 
 	if p&piece.King != piece.None { // kingmove?
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(FToPb(move.ToPosF))
+			board.WhiteKingPosF = Pos(move.ToPosF)
 		} else {
-			board.BlackKingPos = Pos(FToPb(move.ToPosF))
+			board.BlackKingPosF = Pos(move.ToPosF)
 		}
 	}
 
@@ -35,9 +35,9 @@ func (board *YacBoard) DoMove(move Move) {
 	{
 		var kingPos Pos
 		if board.WhiteMove {
-			kingPos = board.WhiteKingPos
+			kingPos = FToPp(board.WhiteKingPosF)
 		} else {
-			kingPos = board.BlackKingPos
+			kingPos = FToPp(board.BlackKingPosF)
 		}
 		if kingPos == Pos(FToPb(move.ToPosF)) && (move.ToPosF-move.FromPosF == 2 || int(move.ToPosF)-int(move.FromPosF) == -2) {
 			switch kingPos {
@@ -140,9 +140,9 @@ func (board *YacBoard) DoMoveBackward(move Move, lastBoardInfos BoardInfo) {
 
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(FToPb(move.FromPosF))
+			board.WhiteKingPosF = Pos(move.FromPosF)
 		} else {
-			board.BlackKingPos = Pos(FToPb(move.FromPosF))
+			board.BlackKingPosF = Pos(move.FromPosF)
 		}
 
 		posXdif := int(move.FromPosF%WidthF) - int(move.ToPosF%WidthF)

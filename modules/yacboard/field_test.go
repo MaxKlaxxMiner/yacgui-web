@@ -2,7 +2,7 @@ package yacboard
 
 import (
 	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/piece"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
+	. "github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"testing"
 )
 
@@ -27,7 +27,7 @@ func TestGetField(t *testing.T) {
 		"PPPPPPPP" +
 		"RNBQKBNR"
 	for i := range checkFields {
-		f := board.GetField(pos.Pos(i))
+		f := board.GetField(Pos(i))
 		if f == piece.Blocked {
 			t.Errorf("invalid blocked field at pos %d", i)
 		}
@@ -35,10 +35,10 @@ func TestGetField(t *testing.T) {
 			t.Errorf("invalid field: %s, expected %s", f.String(), checkFields[i:i+1])
 		}
 	}
-	if board.GetField(pos.Pos(-1)) != piece.Blocked {
+	if board.GetField(Pos(-1)) != piece.Blocked {
 		t.Errorf("expected blocked field at pos %d", -1)
 	}
-	if board.GetField(pos.Pos(len(checkFields))) != piece.Blocked {
+	if board.GetField(Pos(len(checkFields))) != piece.Blocked {
 		t.Errorf("expected blocked field at pos %d", len(checkFields))
 	}
 }
@@ -46,31 +46,31 @@ func TestGetField(t *testing.T) {
 func TestSetField(t *testing.T) {
 	board, _ := NewFromFEN("rnbk1bnr/pppp1ppp/8/8/2B1P3/8/P2K1PPP/qN1Q2NR b - - 1 7")
 
-	board.SetField(pos.FromChars("d8"), piece.BlackQueen)
-	if board.BlackKingPos != pos.FromChars("d8") || board.BlackKingPos == pos.FromChars("e8") {
+	board.SetField(FromChars("d8"), piece.BlackQueen)
+	if FToPp(board.BlackKingPosF) != FromChars("d8") || FToPp(board.BlackKingPosF) == FromChars("e8") {
 		t.Errorf("invalid old black king pos")
 	}
-	board.SetField(pos.FromChars("e8"), piece.BlackKing)
-	if board.BlackKingPos == pos.FromChars("d8") || board.BlackKingPos != pos.FromChars("e8") {
+	board.SetField(FromChars("e8"), piece.BlackKing)
+	if FToPp(board.BlackKingPosF) == FromChars("d8") || FToPp(board.BlackKingPosF) != FromChars("e8") {
 		t.Errorf("invalid new black king pos")
 	}
-	board.SetField(pos.FromChars("e7"), piece.BlackPawn)
-	board.SetField(pos.FromChars("c4"), piece.None)
-	board.SetField(pos.FromChars("e4"), piece.None)
-	board.SetField(pos.FromChars("b2"), piece.WhitePawn)
-	board.SetField(pos.FromChars("c2"), piece.WhitePawn)
-	board.SetField(pos.FromChars("d2"), piece.WhitePawn)
-	board.SetField(pos.FromChars("e2"), piece.WhitePawn)
-	board.SetField(pos.FromChars("a1"), piece.WhiteRook)
-	board.SetField(pos.FromChars("c1"), piece.WhiteBishop)
-	if board.WhiteKingPos != pos.FromChars("d2") || board.WhiteKingPos == pos.FromChars("e1") {
+	board.SetField(FromChars("e7"), piece.BlackPawn)
+	board.SetField(FromChars("c4"), piece.None)
+	board.SetField(FromChars("e4"), piece.None)
+	board.SetField(FromChars("b2"), piece.WhitePawn)
+	board.SetField(FromChars("c2"), piece.WhitePawn)
+	board.SetField(FromChars("d2"), piece.WhitePawn)
+	board.SetField(FromChars("e2"), piece.WhitePawn)
+	board.SetField(FromChars("a1"), piece.WhiteRook)
+	board.SetField(FromChars("c1"), piece.WhiteBishop)
+	if FToPp(board.WhiteKingPosF) != FromChars("d2") || FToPp(board.WhiteKingPosF) == FromChars("e1") {
 		t.Errorf("invalid old white king pos")
 	}
-	board.SetField(pos.FromChars("e1"), piece.WhiteKing)
-	if board.WhiteKingPos == pos.FromChars("d2") || board.WhiteKingPos != pos.FromChars("e1") {
+	board.SetField(FromChars("e1"), piece.WhiteKing)
+	if FToPp(board.WhiteKingPosF) == FromChars("d2") || FToPp(board.WhiteKingPosF) != FromChars("e1") {
 		t.Errorf("invalid new white king pos")
 	}
-	board.SetField(pos.FromChars("f1"), piece.WhiteBishop)
+	board.SetField(FromChars("f1"), piece.WhiteBishop)
 
 	board.WhiteCanCastleKingside = true
 	board.WhiteCanCastleQueenside = true
@@ -90,6 +90,6 @@ func TestSetField(t *testing.T) {
 	})
 
 	assertPanic(t, func() {
-		board.SetField(pos.Pos(pos.FieldCount), piece.WhiteQueen)
+		board.SetField(Pos(FieldCount), piece.WhiteQueen)
 	})
 }

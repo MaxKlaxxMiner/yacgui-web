@@ -7,9 +7,9 @@ import (
 
 func (board *YacBoard) IsChecked() bool {
 	if board.WhiteMove {
-		return board.isChecked(board.WhiteKingPos, piece.Black)
+		return board.isChecked(FToPp(board.WhiteKingPosF), piece.Black)
 	} else {
-		return board.isChecked(board.BlackKingPos, piece.WhiteKing)
+		return board.isChecked(FToPp(board.BlackKingPosF), piece.WhiteKing)
 	}
 }
 
@@ -20,60 +20,60 @@ func (board *YacBoard) isChecked(pos Pos, checkerColor piece.Piece) bool {
 	// --- check pawn and king ---
 	if checkerColor == piece.White {
 		if posX > 0 {
-			if posY > 0 && pos-(Width+1) == board.WhiteKingPos {
+			if posY > 0 && pos-(Width+1) == FToPp(board.WhiteKingPosF) {
 				return true
 			}
-			if pos-1 == board.WhiteKingPos {
+			if pos-1 == FToPp(board.WhiteKingPosF) {
 				return true
 			}
-			if posY < Height-1 && (pos+(Width-1) == board.WhiteKingPos || board.FieldsF[PToFp(pos+(Width-1))] == piece.WhitePawn) {
+			if posY < Height-1 && (pos+(Width-1) == FToPp(board.WhiteKingPosF) || board.FieldsF[PToFp(pos+(Width-1))] == piece.WhitePawn) {
 				return true
 			}
 		}
 		if posX < Width-1 {
-			if posY > 0 && pos-(Width-1) == board.WhiteKingPos {
+			if posY > 0 && pos-(Width-1) == FToPp(board.WhiteKingPosF) {
 				return true
 			}
-			if pos+1 == board.WhiteKingPos {
+			if pos+1 == FToPp(board.WhiteKingPosF) {
 				return true
 			}
-			if posY < Height-1 && (pos+(Width+1) == board.WhiteKingPos || board.FieldsF[PToFp(pos+(Width+1))] == piece.WhitePawn) {
+			if posY < Height-1 && (pos+(Width+1) == FToPp(board.WhiteKingPosF) || board.FieldsF[PToFp(pos+(Width+1))] == piece.WhitePawn) {
 				return true
 			}
 		}
-		if posY > 0 && pos-Width == board.WhiteKingPos {
+		if posY > 0 && pos-Width == FToPp(board.WhiteKingPosF) {
 			return true
 		}
-		if posY < Height-1 && pos+Width == board.WhiteKingPos {
+		if posY < Height-1 && pos+Width == FToPp(board.WhiteKingPosF) {
 			return true
 		}
 	} else {
 		if posX > 0 {
-			if posY > 0 && (pos-(Width+1) == board.BlackKingPos || board.FieldsF[PToFp(pos-(Width+1))] == piece.BlackPawn) {
+			if posY > 0 && (pos-(Width+1) == FToPp(board.BlackKingPosF) || board.FieldsF[PToFp(pos-(Width+1))] == piece.BlackPawn) {
 				return true
 			}
-			if pos-1 == board.BlackKingPos {
+			if pos-1 == FToPp(board.BlackKingPosF) {
 				return true
 			}
-			if posY < Height-1 && pos+(Width-1) == board.BlackKingPos {
+			if posY < Height-1 && pos+(Width-1) == FToPp(board.BlackKingPosF) {
 				return true
 			}
 		}
 		if posX < Width-1 {
-			if posY > 0 && (pos-(Width-1) == board.BlackKingPos || board.FieldsF[PToFp(pos-(Width-1))] == piece.BlackPawn) {
+			if posY > 0 && (pos-(Width-1) == FToPp(board.BlackKingPosF) || board.FieldsF[PToFp(pos-(Width-1))] == piece.BlackPawn) {
 				return true
 			}
-			if pos+1 == board.BlackKingPos {
+			if pos+1 == FToPp(board.BlackKingPosF) {
 				return true
 			}
-			if posY < Height-1 && pos+(Width+1) == board.BlackKingPos {
+			if posY < Height-1 && pos+(Width+1) == FToPp(board.BlackKingPosF) {
 				return true
 			}
 		}
-		if posY > 0 && pos-Width == board.BlackKingPos {
+		if posY > 0 && pos-Width == FToPp(board.BlackKingPosF) {
 			return true
 		}
-		if posY < Height-1 && pos+Width == board.BlackKingPos {
+		if posY < Height-1 && pos+Width == FToPp(board.BlackKingPosF) {
 			return true
 		}
 	}

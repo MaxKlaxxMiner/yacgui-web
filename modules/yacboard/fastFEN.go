@@ -57,9 +57,9 @@ func (board *YacBoard) SetFastFEN(buf []byte, ofs int) int {
 		board.FieldsF[PToF(i)] = piece.Piece(b)
 		if piece.Piece(b)&piece.King != piece.None {
 			if piece.Piece(b) == piece.WhiteKing {
-				board.WhiteKingPos = Pos(i)
+				board.WhiteKingPosF = PToFp(Pos(i))
 			} else {
-				board.BlackKingPos = Pos(i)
+				board.BlackKingPosF = PToFp(Pos(i))
 			}
 		}
 	}

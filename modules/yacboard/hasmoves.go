@@ -544,7 +544,7 @@ func hasBlackMoves(b *YacBoard) bool {
 
 func (board *YacBoard) HasMoves() bool {
 	if board.WhiteMove {
-		kp := board.WhiteKingPos
+		kp := FToPp(board.WhiteKingPosF)
 		posX := kp % Width
 		board.FieldsF[PToFp(kp)] = piece.None
 
@@ -561,7 +561,7 @@ func (board *YacBoard) HasMoves() bool {
 		board.FieldsF[PToFp(kp)] = piece.WhiteKing
 		return hasWhiteMoves(board)
 	} else {
-		kp := board.BlackKingPos
+		kp := FToPp(board.BlackKingPosF)
 		posX := kp % Width
 		board.FieldsF[PToFp(kp)] = piece.None
 

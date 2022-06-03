@@ -20,9 +20,9 @@ func (board *YacBoard) SetField(pos Pos, p piece.Piece) {
 
 	if p&piece.King == piece.King {
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = pos
+			board.WhiteKingPosF = PToFp(pos)
 		} else {
-			board.BlackKingPos = pos
+			board.BlackKingPosF = PToFp(pos)
 		}
 	}
 }

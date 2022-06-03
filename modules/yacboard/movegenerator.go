@@ -33,9 +33,9 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 
 	if p&piece.King != piece.None { // kingmove?
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(FToPb(move.ToPosF))
+			board.WhiteKingPosF = Pos(move.ToPosF)
 		} else {
-			board.BlackKingPos = Pos(FToPb(move.ToPosF))
+			board.BlackKingPosF = Pos(move.ToPosF)
 		}
 	}
 
@@ -43,9 +43,9 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 	{
 		var kingPos Pos
 		if board.WhiteMove {
-			kingPos = board.WhiteKingPos
+			kingPos = FToPp(board.WhiteKingPosF)
 		} else {
-			kingPos = board.BlackKingPos
+			kingPos = FToPp(board.BlackKingPosF)
 		}
 		if board.isChecked(kingPos, board.invertedMoveColor()) {
 			board.FieldsF[move.ToPosF] = move.CapturePiece
@@ -59,9 +59,9 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 			}
 			if p&piece.King != piece.None {
 				if p == piece.WhiteKing {
-					board.WhiteKingPos = Pos(FToPb(move.FromPosF))
+					board.WhiteKingPosF = Pos(move.FromPosF)
 				} else {
-					board.BlackKingPos = Pos(FToPb(move.FromPosF))
+					board.BlackKingPosF = Pos(move.FromPosF)
 				}
 			}
 			return false
@@ -79,9 +79,9 @@ func (board *YacBoard) simpleMoveCheck(move Move) bool {
 	}
 	if p&piece.King != piece.None {
 		if p == piece.WhiteKing {
-			board.WhiteKingPos = Pos(FToPb(move.FromPosF))
+			board.WhiteKingPosF = Pos(move.FromPosF)
 		} else {
-			board.BlackKingPos = Pos(FToPb(move.FromPosF))
+			board.BlackKingPosF = Pos(move.FromPosF)
 		}
 	}
 	return true

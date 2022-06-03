@@ -10,8 +10,8 @@ type YacBoard struct {
 
 	HalfmoveClock int
 	MoveNumber    int
-	WhiteKingPos  Pos
-	BlackKingPos  Pos
+	WhiteKingPosF Pos
+	BlackKingPosF Pos
 	EnPassantPosF Pos
 
 	WhiteMove               bool
