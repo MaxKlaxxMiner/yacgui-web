@@ -32,7 +32,7 @@ const (
 )
 
 func (board *YacBoard) GetBoardInfo() BoardInfo {
-	result := BoardInfo(uint8(int8(board.EnPassantPos))) | BoardInfo(uint(board.HalfmoveClock)<<16)
+	result := BoardInfo(uint8(int8(board.EnPassantPosF))) | BoardInfo(uint(board.HalfmoveClock)<<16)
 
 	if board.WhiteCanCastleKingside {
 		result |= WhiteCanCastleKingside
@@ -51,7 +51,7 @@ func (board *YacBoard) GetBoardInfo() BoardInfo {
 }
 
 func (board *YacBoard) SetBoardInfo(boardInfo BoardInfo) {
-	board.EnPassantPos = pos.Pos(int8(uint8(boardInfo & EnPassantMask)))
+	board.EnPassantPosF = pos.Pos(int8(uint8(boardInfo & EnPassantMask)))
 	board.WhiteCanCastleKingside = (boardInfo & WhiteCanCastleKingside) != BoardInfoNone
 	board.WhiteCanCastleQueenside = (boardInfo & WhiteCanCastleQueenside) != BoardInfoNone
 	board.BlackCanCastleKingside = (boardInfo & BlackCanCastleKingside) != BoardInfoNone

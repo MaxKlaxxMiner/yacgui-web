@@ -404,12 +404,12 @@ func scanMoveStop(b *YacBoard, pos Pos, foundMove func(pos Pos) bool) bool {
 					}
 				}
 			}
-			if posX > 0 && (b.EnPassantPos == pos-(Width+1) || b.FieldsF[PToFp(pos-(Width+1))]&piece.Colors == piece.Black) { // capture left-top
+			if posX > 0 && (FToPp(b.EnPassantPosF) == pos-(Width+1) || b.FieldsF[PToFp(pos-(Width+1))]&piece.Colors == piece.Black) { // capture left-top
 				if foundMove(pos - (Width + 1)) {
 					return true
 				}
 			}
-			if posX < Width-1 && (b.EnPassantPos == pos-(Width-1) || b.FieldsF[PToFp(pos-(Width-1))]&piece.Colors == piece.Black) { // capture right-top
+			if posX < Width-1 && (FToPp(b.EnPassantPosF) == pos-(Width-1) || b.FieldsF[PToFp(pos-(Width-1))]&piece.Colors == piece.Black) { // capture right-top
 				if foundMove(pos - (Width - 1)) {
 					return true
 				}
@@ -425,12 +425,12 @@ func scanMoveStop(b *YacBoard, pos Pos, foundMove func(pos Pos) bool) bool {
 					}
 				}
 			}
-			if posX > 0 && (b.EnPassantPos == pos+(Width-1) || b.FieldsF[PToFp(pos+(Width-1))]&piece.Colors == piece.White) {
+			if posX > 0 && (FToPp(b.EnPassantPosF) == pos+(Width-1) || b.FieldsF[PToFp(pos+(Width-1))]&piece.Colors == piece.White) {
 				if foundMove(pos + (Width - 1)) {
 					return true
 				}
 			}
-			if posX < Width-1 && (b.EnPassantPos == pos+(Width+1) || b.FieldsF[PToFp(pos+(Width+1))]&piece.Colors == piece.White) {
+			if posX < Width-1 && (FToPp(b.EnPassantPosF) == pos+(Width+1) || b.FieldsF[PToFp(pos+(Width+1))]&piece.Colors == piece.White) {
 				if foundMove(pos + (Width + 1)) {
 					return true
 				}

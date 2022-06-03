@@ -118,26 +118,26 @@ func (board *YacBoard) SetFEN(fen string) error {
 	}
 
 	// --- 4 / 6 - "en passant" ---
-	board.EnPassantPos = FromChars(splits[3])
-	if board.EnPassantPos > 0 {
+	board.EnPassantPosF = PToFp(FromChars(splits[3]))
+	if board.EnPassantPosF > 0 {
 		if board.WhiteMove {
-			if board.EnPassantPos < FromChars("a6") || board.EnPassantPos > FromChars("h6") {
-				board.EnPassantPos = -1
+			if board.EnPassantPosF < PToFp(FromChars("a6")) || board.EnPassantPosF > PToFp(FromChars("h6")) {
+				board.EnPassantPosF = -1
 			}
-			if board.EnPassantPos > 0 && board.FieldsF[PToFp(board.EnPassantPos+Width)] != piece.BlackPawn {
-				board.EnPassantPos = -1
+			if board.EnPassantPosF > 0 && board.FieldsF[board.EnPassantPosF+WidthF] != piece.BlackPawn {
+				board.EnPassantPosF = -1
 			}
 		} else {
-			if board.EnPassantPos < FromChars("a3") || board.EnPassantPos > FromChars("h3") {
-				board.EnPassantPos = -1
+			if board.EnPassantPosF < PToFp(FromChars("a3")) || board.EnPassantPosF > PToFp(FromChars("h3")) {
+				board.EnPassantPosF = -1
 			}
-			if board.EnPassantPos > 0 && board.FieldsF[PToFp(board.EnPassantPos-Width)] != piece.WhitePawn {
-				board.EnPassantPos = -1
+			if board.EnPassantPosF > 0 && board.FieldsF[board.EnPassantPosF-WidthF] != piece.WhitePawn {
+				board.EnPassantPosF = -1
 			}
 		}
 	}
 
-	if board.EnPassantPos == -1 && splits[3] != "-" {
+	if board.EnPassantPosF == -1 && splits[3] != "-" {
 		return errors.New(fmt.Sprintf("invalid FEN: invalid en passant value: \"%v\"", splits[3]))
 	}
 

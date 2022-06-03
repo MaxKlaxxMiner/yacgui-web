@@ -7,7 +7,7 @@ func ChecksumFull(board *YacBoard) crc64.Value {
 		UpdateBool(board.WhiteMove).
 		UpdateBool(board.WhiteCanCastleKingside).UpdateBool(board.WhiteCanCastleQueenside).
 		UpdateBool(board.BlackCanCastleKingside).UpdateBool(board.BlackCanCastleQueenside).
-		UpdateInt(int(board.EnPassantPos)).
+		UpdateInt(int(board.EnPassantPosF)).
 		//UpdateInt(board.HalfmoveClock).
 		UpdateInt(board.MoveNumber)
 }
@@ -17,5 +17,5 @@ func Checksum(board *YacBoard) crc64.Value {
 		UpdateBool(board.WhiteMove).
 		UpdateBool(board.WhiteCanCastleKingside).UpdateBool(board.WhiteCanCastleQueenside).
 		UpdateBool(board.BlackCanCastleKingside).UpdateBool(board.BlackCanCastleQueenside).
-		UpdateInt(int(board.EnPassantPos))
+		UpdateInt(int(board.EnPassantPosF))
 }

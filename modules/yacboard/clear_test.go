@@ -16,7 +16,7 @@ func TestClear(t *testing.T) {
 		t.Errorf("invalid clear-FEN: %s, expected-FEN: %s", clearFen, "8/8/8/8/8/8/8/8 w - - 0 1")
 	}
 
-	cleanBoard := YacBoard{MoveNumber: 1, WhiteKingPos: -1, BlackKingPos: -1, EnPassantPos: -1, WhiteMove: true}
+	cleanBoard := YacBoard{MoveNumber: 1, WhiteKingPos: -1, BlackKingPos: -1, EnPassantPosF: -1, WhiteMove: true}
 
 	for x := 0; x < pos.WidthF; x++ {
 		y := 0

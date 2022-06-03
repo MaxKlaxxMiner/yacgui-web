@@ -12,7 +12,7 @@ type YacBoard struct {
 	MoveNumber    int
 	WhiteKingPos  Pos
 	BlackKingPos  Pos
-	EnPassantPos  Pos
+	EnPassantPosF Pos
 
 	WhiteMove               bool
 	WhiteCanCastleKingside  bool

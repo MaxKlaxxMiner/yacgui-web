@@ -22,7 +22,7 @@ func (board *YacBoard) Clear() {
 	board.MoveNumber = 1
 	board.WhiteKingPos = -1
 	board.BlackKingPos = -1
-	board.EnPassantPos = -1
+	board.EnPassantPosF = -1
 
 	board.WhiteMove = true
 	board.WhiteCanCastleKingside = false

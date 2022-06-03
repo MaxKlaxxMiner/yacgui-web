@@ -1,6 +1,7 @@
 package yacboard
 
 import (
+	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/pos"
 	"testing"
 )
 
@@ -35,8 +36,8 @@ func TestGetFEN(t *testing.T) {
 
 	board.SetFEN("rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3")
 	testGetFENCheck(t, &board, "rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3")
-	if board.EnPassantPos.String() != "d6" {
-		t.Errorf("invalid en passant-pos: %s", board.EnPassantPos)
+	if pos.FToPp(board.EnPassantPosF).String() != "d6" {
+		t.Errorf("invalid en passant-pos: %s", pos.FToPp(board.EnPassantPosF))
 	}
 
 	board.SetFEN("8/8/8/3KB3/3N4/8/8/7k w - - 0 1")

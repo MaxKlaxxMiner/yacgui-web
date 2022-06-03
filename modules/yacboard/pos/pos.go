@@ -38,8 +38,8 @@ func PToFb(pos byte) byte {
 	return byte(PToF(int(pos)))
 }
 
-func PToFp(pos Pos) int {
-	return PToF(int(pos))
+func PToFp(pos Pos) Pos {
+	return Pos(PToF(int(pos)))
 }
 
 func FToP(pos int) int {
@@ -51,4 +51,8 @@ func FToP(pos int) int {
 
 func FToPb(pos byte) int {
 	return FToP(int(pos))
+}
+
+func FToPp(pos Pos) Pos {
+	return Pos(FToP(int(pos)))
 }

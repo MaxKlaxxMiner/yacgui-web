@@ -11,7 +11,7 @@ func (board *YacBoard) DoMove(move Move) {
 	board.FieldsF[move.ToPosF] = p
 	board.FieldsF[move.FromPosF] = piece.None
 
-	if Pos(FToPb(move.ToPosF)) == board.EnPassantPos && p&piece.Pawn != piece.None { // "en passant"?
+	if Pos(move.ToPosF) == board.EnPassantPosF && p&piece.Pawn != piece.None { // "en passant"?
 		if board.WhiteMove {
 			board.FieldsF[move.ToPosF+WidthF] = piece.None
 		} else {
@@ -57,28 +57,28 @@ func (board *YacBoard) DoMove(move Move) {
 		}
 	}
 
-	board.EnPassantPos = -1
+	board.EnPassantPosF = -1
 	if p&piece.Pawn != piece.None && (move.ToPosF-move.FromPosF == WidthF*2 || move.FromPosF-move.ToPosF == WidthF*2) {
-		board.EnPassantPos = Pos(FToP((int(move.FromPosF) + int(move.ToPosF)) / 2))
-		posX := board.EnPassantPos % Width
+		board.EnPassantPosF = Pos((int(move.FromPosF) + int(move.ToPosF)) / 2)
+		posX := board.EnPassantPosF%WidthF + 1
 		opPawn := false
 		if board.WhiteMove {
-			if posX > 0 && board.FieldsF[PToFp(board.EnPassantPos-Width-1)] == piece.BlackPawn {
+			if posX > 0 && board.FieldsF[board.EnPassantPosF-WidthF-1] == piece.BlackPawn {
 				opPawn = true
 			}
-			if posX < Width-1 && board.FieldsF[PToFp(board.EnPassantPos-Width+1)] == piece.BlackPawn {
+			if posX < Width-1 && board.FieldsF[board.EnPassantPosF-WidthF+1] == piece.BlackPawn {
 				opPawn = true
 			}
 		} else {
-			if posX > 0 && board.FieldsF[PToFp(board.EnPassantPos+Width-1)] == piece.WhitePawn {
+			if posX > 0 && board.FieldsF[board.EnPassantPosF+WidthF-1] == piece.WhitePawn {
 				opPawn = true
 			}
-			if posX < Width-1 && board.FieldsF[PToFp(board.EnPassantPos+Width+1)] == piece.WhitePawn {
+			if posX < Width-1 && board.FieldsF[board.EnPassantPosF+WidthF+1] == piece.WhitePawn {
 				opPawn = true
 			}
 		}
 		if !opPawn {
-			board.EnPassantPos = -1
+			board.EnPassantPosF = -1
 		}
 	}
 
