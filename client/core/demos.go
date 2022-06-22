@@ -39,7 +39,6 @@ type MouseDemo struct {
 }
 
 func Draw(c *canvas.CanvasContext) {
-
 	c.Save()
 
 	var board = yacboard.New()

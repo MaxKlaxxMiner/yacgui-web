@@ -2,7 +2,6 @@ package yacboard
 
 import (
 	"fmt"
-	"github.com/MaxKlaxxMiner/yacgui-web/modules/yacboard/goBit"
 	"strconv"
 	"time"
 )
@@ -49,33 +48,6 @@ func moveCounter(board *YacBoard, level int) int {
 	return totalCount
 }
 
-var moveListCache [16]goBit.MoveList
-
-func moveCounter2(board *goBit.BoardStruct, level int) int {
-	moves := &moveListCache[level]
-	moves.Clear()
-	board.GenAllMoves(moves)
-	if level <= 1 {
-		count := 0
-		for m := 0; m < len(*moves); m++ {
-			if board.Move((*moves)[m]) {
-				count++
-				board.UnMove((*moves)[m])
-			}
-		}
-		return count
-	}
-	level--
-	totalCount := 0
-	for m := 0; m < len(*moves); m++ {
-		if board.Move((*moves)[m]) {
-			totalCount += moveCounter2(board, level)
-			board.UnMove((*moves)[m])
-		}
-	}
-	return totalCount
-}
-
 func perftTestFEN(fen string, nodeCounter []int64) {
 	board, err := NewFromFEN(fen)
 	if err != nil {
@@ -98,22 +70,6 @@ func perftTestFEN(fen string, nodeCounter []int64) {
 		fmt.Print("Level: ", level, " / ", len(nodeCounter), " Nodes: ")
 		tim := time.Now()
 		count := int64(moveCounter(&board, level))
-		fmt.Printf("%s (%s ms)", numFormat(count), numFormat(time.Since(tim).Milliseconds()))
-		if count == nodeCounter[len(nodeCounter)-level] {
-			fmt.Println(" [ok]")
-		} else {
-			fmt.Printf(" [FAIL] %d != %d\n", count, nodeCounter[len(nodeCounter)-level])
-			panic("perft fail")
-		}
-	}
-
-	goBitsBoard := goBit.BoardStruct{}
-	goBitsBoard.ParseFEN(fen)
-	fmt.Println("--- goBits ---")
-	for level := 1; level <= len(nodeCounter); level++ {
-		fmt.Print("Level: ", level, " / ", len(nodeCounter), " Nodes: ")
-		tim := time.Now()
-		count := int64(moveCounter2(&goBitsBoard, level))
 		fmt.Printf("%s (%s ms)", numFormat(count), numFormat(time.Since(tim).Milliseconds()))
 		if count == nodeCounter[len(nodeCounter)-level] {
 			fmt.Println(" [ok]")
