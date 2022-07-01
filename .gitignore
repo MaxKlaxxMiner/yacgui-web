@@ -2,3 +2,4 @@
 *.wasm
 *.exe
 *.exe~
+lichess-cache

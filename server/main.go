@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"server/lichess"
 )
 
 var (
@@ -15,6 +16,9 @@ var (
 )
 
 func main() {
+	lichess.Main()
+	return
+
 	//yacboard.PerftTest(2)
 
 	_ = mime.AddExtensionType(".js", "application/javascript")
