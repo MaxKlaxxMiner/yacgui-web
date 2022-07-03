@@ -11,10 +11,11 @@ import (
 	"os"
 	"server/lichess/explorer/ratings"
 	"server/lichess/explorer/speeds"
+	"strings"
 	"time"
 )
 
-const requestLimiter = time.Millisecond * 1000
+var requestLimiter = time.Millisecond * 1000
 
 var lastRequest time.Time
 
@@ -40,6 +41,13 @@ func Request(fen string, speeds speeds.Speeds, ratings ratings.Ratings) *Respons
 		jsonResult, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
 			panic(err)
+		}
+
+		if strings.Contains(string(jsonResult), "429 Too Many Requests") {
+			requestLimiter += time.Millisecond * 100
+			fmt.Println("429 Too Many Requests ->", requestLimiter)
+			time.Sleep(requestLimiter * 10)
+			return Request(fen, speeds, ratings)
 		}
 
 		err = os.WriteFile(cacheFile, jsonResult, 644)

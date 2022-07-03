@@ -43,7 +43,3 @@ func (m Move) String() string {
 
 	return result
 }
-
-func (m Move) Uci() string {
-	return pos.Pos(m.FromPos).String() + pos.Pos(m.ToPos).String()
-}

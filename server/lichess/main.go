@@ -16,7 +16,7 @@ type stats struct {
 	black int
 }
 
-func MapMoves(board *yacboard.YacBoard) bool {
+func MapMoves(board *yacboard.YacBoard) (stats, bool) {
 	r := explorer.Request(board.GetFEN(), speeds.SlowerThanBullet, ratings.All)
 	//
 
@@ -24,43 +24,19 @@ func MapMoves(board *yacboard.YacBoard) bool {
 	for _, v := range r.Moves {
 		totalGames += v.White + v.Draws + v.Black
 	}
-	fmt.Print("games: ", totalGames)
+	//fmt.Print("games: ", totalGames)
 	if totalGames < 100 {
-		return false
+		return stats{r.White, r.Draws, r.Black}, false
 	}
 	selectRandom := rand.Intn(totalGames)
 	for _, v := range r.Moves {
 		selectRandom -= v.White + v.Draws + v.Black
 		if selectRandom <= 0 {
-			fmt.Println(", selected: ", v.San)
-			moves := board.GetMoves()
-			if v.San == "O-O" || v.San == "O-O-O" {
-				for _, m := range moves {
-					if m.Uci() == "e1g1" && board.WhiteMove && v.San == "O-O" {
-						board.DoMove(m)
-						return true
-					}
-					if m.Uci() == "e1c1" && board.WhiteMove && v.San == "O-O-O" {
-						board.DoMove(m)
-						return true
-					}
-					if m.Uci() == "e8g8" && !board.WhiteMove && v.San == "O-O" {
-						board.DoMove(m)
-						return true
-					}
-					if m.Uci() == "e8c8" && !board.WhiteMove && v.San == "O-O-O" {
-						board.DoMove(m)
-						return true
-					}
-				}
+			//fmt.Println(", selected: ", v.San)
+			if !board.DoUciMove(v.Uci) {
+				panic("move not found: " + v.San + " (" + v.Uci + ")")
 			}
-			for _, m := range moves {
-				if m.Uci() == v.Uci {
-					board.DoMove(m)
-					return true
-				}
-			}
-			panic("move not found: " + v.San + " (" + v.Uci + ")")
+			return stats{v.White, v.Draws, v.Black}, true
 		}
 	}
 	panic("selected move not found")
@@ -68,8 +44,27 @@ func MapMoves(board *yacboard.YacBoard) bool {
 
 func Main() {
 	rand.Seed(time.Now().UnixNano())
-	board := yacboard.New()
-	fmt.Println(board)
-	for MapMoves(&board) {
+	max := 0
+	maxFast := 0
+	for {
+		board := yacboard.New()
+		board.DoUciMove("e2e4", "f7f5")
+		//fmt.Println(board)
+		tim := time.Now()
+		for i := 0; i < max; i++ {
+			_, next := MapMoves(&board)
+			if !next {
+				break
+			}
+		}
+		if time.Since(tim).Milliseconds() < 100 {
+			maxFast++
+			if maxFast > 100 {
+				max++
+				maxFast = 0
+				fmt.Println("--- Next Depth ", max, " ---")
+				time.Sleep(1000 * time.Millisecond)
+			}
+		}
 	}
 }
