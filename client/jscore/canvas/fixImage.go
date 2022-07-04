@@ -7,7 +7,7 @@ type FixImage struct {
 	ImageInstance js.Value
 }
 
-func NewFixImage(bitmap *CanvasBitmap) *FixImage {
+func NewFixImage(bitmap *Bitmap) *FixImage {
 	result := FixImage{
 		SizeXY:        bitmap.SizeXY,
 		ImageInstance: js.Global().Get("Image").New(),

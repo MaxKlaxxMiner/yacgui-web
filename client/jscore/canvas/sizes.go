@@ -14,10 +14,10 @@ func GetWindowSize() SizeXY {
 func (c *Canvas) ResizeIfNeeded() bool {
 	c.NewSize = GetWindowSize()
 
-	if c.NewSize != c.CanvasContext.SizeXY {
+	if c.NewSize != c.Context.SizeXY {
 		c.CanvasHtml.Set("width", c.NewSize.Width)
 		c.CanvasHtml.Set("height", c.NewSize.Height)
-		c.CanvasContext.SizeXY = c.NewSize
+		c.Context.SizeXY = c.NewSize
 	}
 
 	return false

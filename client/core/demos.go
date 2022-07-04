@@ -15,16 +15,16 @@ import (
 	"time"
 )
 
-type DemoInterface interface {
-	TickUpdate(c *canvas.CanvasContext, k *keys.Keys)
+type TickInterface interface {
+	TickUpdate(c *canvas.Context, k *keys.Keys)
 }
 
-func RunMainLoop(demo DemoInterface) {
+func RunMainLoop(demo TickInterface) {
 	var loop js.Func
 	loop = js.FuncOf(func(_ js.Value, _ []js.Value) any {
 		js.Global().Call("requestAnimationFrame", loop)
 		can.ResizeIfNeeded()
-		demo.TickUpdate(&can.CanvasContext, ks)
+		demo.TickUpdate(&can.Context, ks)
 		return nil
 	})
 	js.Global().Call("requestAnimationFrame", loop)
@@ -38,7 +38,7 @@ func RunLineDemo() {
 type MouseDemo struct {
 }
 
-func Draw(c *canvas.CanvasContext) {
+func Draw(c *canvas.Context) {
 	c.Save()
 
 	var board = yacboard.New()
@@ -75,8 +75,8 @@ func Draw(c *canvas.CanvasContext) {
 	c.Restore()
 }
 
-func (demo *MouseDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
-	Draw(&can.CanvasContext)
+func (demo *MouseDemo) TickUpdate(c *canvas.Context, k *keys.Keys) {
+	Draw(&can.Context)
 }
 
 func RunMouseDemo() {

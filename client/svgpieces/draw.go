@@ -10,7 +10,7 @@ func newPath(pathStr string) js.Value {
 	return js.Global().Get("Path2D").New(pathStr)
 }
 
-func DrawDirect(c *canvas.CanvasContext, p piece.Piece) {
+func DrawDirect(c *canvas.Context, p piece.Piece) {
 	c.SetLineCap("round")
 	c.SetLineWidth(1.5)
 	c.SetStrokeStyle("#000")
@@ -86,7 +86,7 @@ func DrawDirect(c *canvas.CanvasContext, p piece.Piece) {
 var piecesCache *canvas.FixImage
 var piecesCacheSize int
 
-func Draw(c *canvas.CanvasContext, x, y, fieldSize int, p piece.Piece) {
+func Draw(c *canvas.Context, x, y, fieldSize int, p piece.Piece) {
 	if piecesCache == nil || fieldSize != piecesCacheSize {
 		b := canvas.NewBitmap(180*6, 180*2)
 		scale := float64(fieldSize) / 45
@@ -96,9 +96,9 @@ func Draw(c *canvas.CanvasContext, x, y, fieldSize int, p piece.Piece) {
 			b.ResetTransform()
 			b.ScaleF(scale, scale)
 			b.Translate(i*45, 0)
-			DrawDirect(&b.CanvasContext, pc|piece.White)
+			DrawDirect(&b.Context, pc|piece.White)
 			b.Translate(0, 45)
-			DrawDirect(&b.CanvasContext, pc|piece.Black)
+			DrawDirect(&b.Context, pc|piece.Black)
 		}
 
 		piecesCache = canvas.NewFixImage(b)

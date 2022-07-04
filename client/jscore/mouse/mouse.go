@@ -1,11 +1,12 @@
 package mouse
 
 import (
+	"client/jscore/canvas"
 	"syscall/js"
 )
 
 type Mouse struct {
-	X, Y          int
+	canvas.PosXY
 	Wheel         int
 	Buttons       int
 	EventCallback []func(m *Mouse)

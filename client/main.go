@@ -11,7 +11,9 @@ func main() {
 	core.InitCanvas()
 
 	//core.RunLineDemo()
-	core.RunMouseDemo()
+	//core.RunMouseDemo()
+
+	core.MainAppStart()
 
 	<-make(chan bool, 0)
 }

@@ -14,7 +14,7 @@ func HexColor(color int) string {
 	return string(result)
 }
 
-func (ctx *CanvasContext) Line(x1, y1, x2, y2, color int) {
+func (ctx *Context) Line(x1, y1, x2, y2, color int) {
 	ctx.BeginPath()
 	ctx.SetStrokeStyle(HexColor(color))
 	ctx.MoveTo(x1, y1)
@@ -22,7 +22,7 @@ func (ctx *CanvasContext) Line(x1, y1, x2, y2, color int) {
 	ctx.Stroke()
 }
 
-func (ctx *CanvasContext) LineF(x1, y1, x2, y2 float64, color int) {
+func (ctx *Context) LineF(x1, y1, x2, y2 float64, color int) {
 	ctx.BeginPath()
 	ctx.SetStrokeStyle(HexColor(color))
 	ctx.MoveToF(x1, y1)

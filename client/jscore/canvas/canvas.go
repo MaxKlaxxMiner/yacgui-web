@@ -9,7 +9,7 @@ type Canvas struct {
 	OuterHtml  js.Value
 	CanvasHtml js.Value
 	NewSize    SizeXY
-	CanvasContext
+	Context
 }
 
 func New(elementSelector string) (Canvas, error) {
@@ -28,8 +28,8 @@ func New(elementSelector string) (Canvas, error) {
 	c.OuterHtml.Call("insertBefore", c.CanvasHtml, c.OuterHtml.Get("childNodes").Index(0))
 
 	// --- create (2D) render-context ---
-	c.CanvasContext = CanvasContext{c.CanvasHtml.Call("getContext", "2d"), SizeXY{}}
-	if c.CanvasContext.IsNull() {
+	c.Context = Context{c.CanvasHtml.Call("getContext", "2d"), SizeXY{}}
+	if c.Context.IsNull() {
 		return c, errors.New("error creating CanvasRenderingContext2D")
 	}
 
@@ -37,7 +37,7 @@ func New(elementSelector string) (Canvas, error) {
 	c.ResizeIfNeeded()
 
 	// --- default settings ---
-	c.CanvasContext.ImageSmoothingEnabled(false)
+	c.Context.ImageSmoothingEnabled(false)
 
 	return c, nil
 }

@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"server/lichess"
 )
 
 var (
@@ -16,8 +15,8 @@ var (
 )
 
 func main() {
-	lichess.Main()
-	return
+	//lichess.Main()
+	//return
 
 	//yacboard.PerftTest(2)
 

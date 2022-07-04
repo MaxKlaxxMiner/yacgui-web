@@ -26,7 +26,7 @@ func New() LineDemo {
 	}
 }
 
-func (demo *LineDemo) TickUpdate(c *canvas.CanvasContext, k *keys.Keys) {
+func (demo *LineDemo) TickUpdate(c *canvas.Context, k *keys.Keys) {
 	c.Save()
 	c.ResetTransform()
 	defer c.Restore()
