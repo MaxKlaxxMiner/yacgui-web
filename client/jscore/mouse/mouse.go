@@ -2,6 +2,7 @@ package mouse
 
 import (
 	"client/jscore/canvas"
+	"strconv"
 	"syscall/js"
 )
 
@@ -13,7 +14,17 @@ type Mouse struct {
 }
 
 func New() *Mouse {
+	var startPos canvas.PosXY
+	sStorage := js.Global().Get("sessionStorage")
+	if mx := sStorage.Get("mouseX"); !mx.IsUndefined() {
+		startPos.X, _ = strconv.Atoi(mx.String())
+	}
+	if my := sStorage.Get("mouseY"); !my.IsUndefined() {
+		startPos.Y, _ = strconv.Atoi(my.String())
+	}
+
 	mouse := Mouse{
+		PosXY:         startPos,
 		EventCallback: []func(m *Mouse){},
 	}
 
@@ -26,6 +37,8 @@ func New() *Mouse {
 		m := args[0]
 		mouse.X = m.Get("x").Int()
 		mouse.Y = m.Get("y").Int()
+		sStorage.Set("mouseX", mouse.X)
+		sStorage.Set("mouseY", mouse.Y)
 		mouse.Buttons = m.Get("buttons").Int()
 		if mouse.Buttons&8|16 != 0 { // supress browser back/forward
 			args[0].Call("preventDefault")
