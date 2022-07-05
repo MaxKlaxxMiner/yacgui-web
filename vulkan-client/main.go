@@ -15,10 +15,7 @@ func init() {
 func main() {
 	profile := os.Getenv("PROFILE")
 
-	var enableValidationLayers bool
-	if profile != "prod" {
-		enableValidationLayers = true
-	}
+	enableValidationLayers := profile != "prod"
 
 	a := app.New(app.Config{EnableValidationLayers: enableValidationLayers, ValidationLayers: []string{
 		"VK_LAYER_KHRONOS_validation\x00",
