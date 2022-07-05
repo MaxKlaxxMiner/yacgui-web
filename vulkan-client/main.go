@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"runtime"
 	"vulkan-client/app"
 )
@@ -12,7 +13,17 @@ func init() {
 }
 
 func main() {
-	a := app.New()
+	profile := os.Getenv("PROFILE")
+
+	var enableValidationLayers bool
+	if profile != "prod" {
+		enableValidationLayers = true
+	}
+
+	a := app.New(app.Config{EnableValidationLayers: enableValidationLayers, ValidationLayers: []string{
+		"VK_LAYER_KHRONOS_validation\x00",
+	}})
+
 	if err := a.Run(); err != nil {
 		panic(err)
 	}

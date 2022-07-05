@@ -10,11 +10,18 @@ import (
 type App struct {
 	win            *glfw.Window
 	instance       vk.Instance
+	config         Config
+	debugMessenger vk.DebugReportCallback
 	mouseX, mouseY int
 }
 
-func New() *App {
-	return new(App)
+type Config struct {
+	EnableValidationLayers bool
+	ValidationLayers       []string
+}
+
+func New(config Config) *App {
+	return &App{config: config}
 }
 
 func (a *App) Run() (err error) {

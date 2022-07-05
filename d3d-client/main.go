@@ -2,11 +2,12 @@ package main
 
 import (
 	"d3d-client/app"
-	"fmt"
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/gonutz/d3d9"
 	"github.com/gonutz/w32/v2"
 	"runtime"
 	"syscall"
+	"time"
 )
 
 var mouseX, mouseY int
@@ -31,7 +32,7 @@ func main() {
 			case w32.WM_MOUSEMOVE:
 				mouseX = int(l & 0xffff)
 				mouseY = int(l >> 16)
-				fmt.Println(mouseX, mouseY)
+				//fmt.Println(mouseX, mouseY)
 				return 0
 			default:
 				return w32.DefWindowProc(window, msg, w, l)
@@ -45,7 +46,7 @@ func main() {
 		classNamePtr,
 		windowNamePtr,
 		w32.WS_OVERLAPPEDWINDOW|w32.WS_VISIBLE,
-		w32.CW_USEDEFAULT, w32.CW_USEDEFAULT, 640, 480,
+		w32.CW_USEDEFAULT, w32.CW_USEDEFAULT, 1792, 1008,
 		0, 0, 0, nil,
 	)
 
@@ -59,9 +60,10 @@ func main() {
 		d3d9.HWND(windowHandle),
 		d3d9.CREATE_HARDWARE_VERTEXPROCESSING,
 		d3d9.PRESENT_PARAMETERS{
-			Windowed:      1,
-			SwapEffect:    d3d9.SWAPEFFECT_DISCARD,
-			HDeviceWindow: d3d9.HWND(windowHandle),
+			Windowed:             1,
+			SwapEffect:           d3d9.SWAPEFFECT_DISCARD,
+			HDeviceWindow:        d3d9.HWND(windowHandle),
+			PresentationInterval: d3d9.PRESENT_INTERVAL_IMMEDIATE, // d3d9.PRESENT_INTERVAL_IMMEDIATE,
 		},
 	)
 	check(err)
@@ -81,11 +83,11 @@ func main() {
 
 	vertices := []float32{
 		-0.5, -0.5,
-		0, 0.5,
+		-0.5, 0.5,
 		0.5, -0.5,
+		0.5, 0.5,
 	}
-	vb, err := device.CreateVertexBuffer(uint(len(vertices)*4),
-		d3d9.USAGE_WRITEONLY, 0, d3d9.POOL_DEFAULT, 0)
+	vb, err := device.CreateVertexBuffer(uint(len(vertices)*4), d3d9.USAGE_WRITEONLY, 0, d3d9.POOL_DEFAULT, 0)
 	check(err)
 	defer vb.Release()
 	data, err := vb.Lock(0, 0, d3d9.LOCK_DISCARD)
@@ -102,17 +104,41 @@ func main() {
 	defer decl.Release()
 	check(device.SetVertexDeclaration(decl))
 
+	rotation := float32(0)
 	// create a timer that ticks every 100ms and register a callback for it
 	w32.SetTimer(windowHandle, 1, 100, 0)
+	var lastTick = time.Now()
 	var msg w32.MSG
 	for w32.GetMessage(&msg, 0, 0, 0) != 0 {
 		w32.TranslateMessage(&msg)
-		check(device.Clear(nil, d3d9.CLEAR_TARGET, 0, 0, 0))
-		check(device.BeginScene())
-		check(device.DrawPrimitive(d3d9.PT_TRIANGLELIST, 0, 1))
-		check(device.EndScene())
-		check(device.Present(nil, nil, 0, nil))
+
 		w32.DispatchMessage(&msg)
+
+		check(device.Clear(nil, d3d9.CLEAR_TARGET, 0, 0, 0))
+
+		ticks := time.Since(lastTick).Milliseconds()
+		for i := int64(0); i < ticks; i++ {
+			rotation += 0.002
+		}
+		lastTick = lastTick.Add(time.Duration(ticks) * time.Millisecond)
+
+		//mvp := mgl32.Translate3D(float32(mouseX)*0.01, float32(mouseY)*0.01, 0)
+		//mvp := mgl32.HomogRotate3DZ(rotation)
+		mvp := mgl32.Ident4()
+		mvp = mvp.Mul4(mgl32.Scale3D(0.1, 0.1, 1))
+		mvp = mvp.Mul4(mgl32.HomogRotate3DZ(rotation))
+		mvp = mvp.Mul4(mgl32.Translate3D((float32(mouseX)-1792.0/2.0)/(1792.0/2.0), -(float32(mouseY)-1008.0/2.0)/(1008.0/2.0), 0).Transpose())
+		//mvp[3] += 0.1
+
+		//device.SetViewport(d3d9.VIEWPORT{X: 0, Y: 0, Width: 1492, Height: 1008, MinZ: 0, MaxZ: 256})
+
+		device.SetTransform(d3d9.TS_PROJECTION, d3d9.MATRIX(mgl32.Ident4()))
+		check(device.SetVertexShaderConstantF(0, mvp[:]))
+		check(device.BeginScene())
+		check(device.DrawPrimitive(d3d9.PT_TRIANGLESTRIP, 0, 2))
+		check(device.EndScene())
+
+		check(device.Present(nil, nil, 0, nil))
 	}
 }
 
