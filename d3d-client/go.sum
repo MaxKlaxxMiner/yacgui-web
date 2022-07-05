@@ -1,0 +1,4 @@
+github.com/gonutz/d3d9 v1.2.1 h1:xcQLMKrAf+/hvFtsyc9LuLJ+qs6TPtbzuKYONRERpYo=
+github.com/gonutz/d3d9 v1.2.1/go.mod h1:q74g3QbR280b+qYauwEV0N9SVadszWPLZ4l/wHiD/AA=
+github.com/gonutz/w32/v2 v2.4.0 h1:k+R8/ddsnb9dwVDsTDWvkJGFmYJDI3ZMgcKgdpLuMpw=
+github.com/gonutz/w32/v2 v2.4.0/go.mod h1:MgtHx0AScDVNKyB+kjyPder4xIi3XAcHS6LDDU2DmdE=

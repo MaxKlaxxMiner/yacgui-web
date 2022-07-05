@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
-	"glfw-client/app"
+	"github.com/vulkan-go/vulkan"
 	"runtime"
 	"strconv"
+	"vulkan-client/app"
 )
 
 func init() {
@@ -16,6 +17,10 @@ func init() {
 
 // Samples: https://github.com/cstegel/opengl-samples-golang
 
+var fpsTxt = ""
+var winTitle = ""
+var mouseX, mouseY int
+
 func main() {
 	err := glfw.Init()
 	if err != nil {
@@ -23,21 +28,26 @@ func main() {
 	}
 	defer glfw.Terminate()
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 	window, err := glfw.CreateWindow(1792, 1008, "Hello World!", nil, nil)
 	if err != nil {
 		panic(err)
 	}
-	window.MakeContextCurrent()
 
-	if err = gl.Init(); err != nil {
+	procAddr := glfw.GetVulkanGetInstanceProcAddress()
+	if procAddr == nil {
+		panic("GetInstanceProcAddress is nil")
+	}
+	vulkan.SetGetInstanceProcAddr(procAddr)
+
+	if err = vulkan.Init(); err != nil {
 		panic(err)
 	}
 
-	app.MainInit(window)
+	window.SetKeyCallback(app.KeyboardCallBack)
+
+	var extensionCount uint32 = 0
+	vulkan.EnumerateInstanceExtensionProperties("", &extensionCount, nil)
+	fmt.Println(fmt.Sprint(extensionCount) + " extensions supported")
 
 	fpsCounter := 0
 	fpsTime := int(glfw.GetTime())
@@ -45,16 +55,22 @@ func main() {
 		// poll events and call their registered callbacks
 		glfw.PollEvents()
 
-		app.MainDraw(window)
-
-		window.SwapBuffers()
+		mx, my := window.GetCursorPos()
+		mouseX = int(mx)
+		mouseY = int(my)
 
 		fpsCounter++
 		tim := int(glfw.GetTime())
 		if tim != fpsTime {
 			fpsTime = tim
-			window.SetTitle("fps: " + strconv.Itoa(fpsCounter))
+			fpsTxt = "fps: " + strconv.Itoa(fpsCounter)
 			fpsCounter = 0
+		}
+
+		title := fmt.Sprintf("%d, %d - %s", mouseX, mouseY, fpsTxt)
+		if title != winTitle {
+			winTitle = title
+			window.SetTitle(winTitle)
 		}
 	}
 }
