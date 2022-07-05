@@ -2,10 +2,12 @@ package main
 
 import (
 	"d3d-client/app"
+	"fmt"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/gonutz/d3d9"
 	"github.com/gonutz/w32/v2"
 	"runtime"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -104,10 +106,13 @@ func main() {
 	defer decl.Release()
 	check(device.SetVertexDeclaration(decl))
 
-	rotation := float32(0)
 	// create a timer that ticks every 100ms and register a callback for it
 	w32.SetTimer(windowHandle, 1, 100, 0)
+
+	rotation := float32(0)
 	var lastTick = time.Now()
+	fpsCounter := 0
+	fpsTime := time.Now().Second()
 	var msg w32.MSG
 	for w32.GetMessage(&msg, 0, 0, 0) != 0 {
 		w32.TranslateMessage(&msg)
@@ -132,13 +137,21 @@ func main() {
 
 		//device.SetViewport(d3d9.VIEWPORT{X: 0, Y: 0, Width: 1492, Height: 1008, MinZ: 0, MaxZ: 256})
 
-		device.SetTransform(d3d9.TS_PROJECTION, d3d9.MATRIX(mgl32.Ident4()))
+		check(device.SetTransform(d3d9.TS_PROJECTION, d3d9.MATRIX(mgl32.Ident4())))
 		check(device.SetVertexShaderConstantF(0, mvp[:]))
 		check(device.BeginScene())
 		check(device.DrawPrimitive(d3d9.PT_TRIANGLESTRIP, 0, 2))
 		check(device.EndScene())
 
 		check(device.Present(nil, nil, 0, nil))
+
+		fpsCounter++
+		tim := time.Now().Second()
+		if tim != fpsTime {
+			fpsTime = tim
+			fmt.Println("fps: " + strconv.Itoa(fpsCounter))
+			fpsCounter = 0
+		}
 	}
 }
 
