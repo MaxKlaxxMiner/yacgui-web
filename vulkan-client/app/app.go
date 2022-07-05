@@ -53,7 +53,56 @@ func (a *App) initVulkan() (err error) {
 
 	vk.SetGetInstanceProcAddr(procAddr)
 
-	return vk.Init()
+	if err = vk.Init(); err != nil {
+		return
+	}
+
+	return a.createInstance()
+}
+
+func (a *App) createInstance() (err error) {
+	glfwExtensions := a.win.GetRequiredInstanceExtensions()
+
+	var extensionCount uint32
+	vk.EnumerateInstanceExtensionProperties("", &extensionCount, nil)
+	extensionProperties := make([]vk.ExtensionProperties, extensionCount)
+	vk.EnumerateInstanceExtensionProperties("", &extensionCount, extensionProperties)
+
+	supportedExtensions := make(map[string]bool)
+	for _, extensionProperty := range extensionProperties {
+		extensionProperty.Deref()
+		supportedExtensions[vk.ToString(extensionProperty.ExtensionName[:])] = true
+	}
+
+	for _, glfwExtension := range glfwExtensions {
+		if !supportedExtensions[glfwExtension] {
+			return fmt.Errorf("glfwExtension - " + glfwExtension + " - is not supported by vulkan")
+		}
+	}
+
+	applicationInfo := vk.ApplicationInfo{
+		SType:              vk.StructureTypeApplicationInfo,
+		PApplicationName:   "Hello Triangle",
+		ApplicationVersion: vk.MakeVersion(1, 0, 0),
+		PEngineName:        "No Engine",
+		EngineVersion:      vk.MakeVersion(1, 0, 0),
+		ApiVersion:         vk.MakeVersion(1, 0, 0),
+	}
+
+	instanceCreateInfo := vk.InstanceCreateInfo{
+		SType:                   vk.StructureTypeInstanceCreateInfo,
+		PApplicationInfo:        &applicationInfo,
+		EnabledExtensionCount:   uint32(len(glfwExtensions)),
+		PpEnabledExtensionNames: glfwExtensions,
+	}
+
+	var instance vk.Instance
+	res := vk.CreateInstance(&instanceCreateInfo, nil, &instance)
+	if res != vk.Success {
+		return fmt.Errorf("failed to create instance")
+	}
+	a.instance = instance
+	return nil
 }
 
 func (a *App) cleanup() {
