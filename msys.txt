@@ -1,0 +1,30 @@
+- install msys -
+c:\pro\msys2
+
+- rechtsklick umstellen = paste -
+
+- update -
+pacman -Syu
+
+- msys2 neustarten und update wiederholen -
+pacman -Syu
+
+- gcc installieren -
+pacman -S base-devel gcc vim cmake
+
+- devel installieren -
+pacman -S development
+
+- path hinzufügen -
+C:\pro\msys64\mingw64\bin;C:\pro\msys64\usr\bin
+
+- console testen -
+gcc --version
+
+- vulkan sdk installieren -
+
+- go per goland runterladen in c:\pro -
+
+- msys toolchain installieren -
+pacman -S mingw-w64-x86_64-toolchain
+
