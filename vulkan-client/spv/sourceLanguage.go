@@ -2,6 +2,7 @@ package spv
 
 type SourceLanguage uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	SourceLanguageUnknown      SourceLanguage = 0
 	SourceLanguageESSL         SourceLanguage = 1

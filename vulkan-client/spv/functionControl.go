@@ -3,6 +3,7 @@ package spv
 type FunctionControlShift uint32
 type FunctionControlMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	FunctionControlInlineShift       FunctionControlShift = 0
 	FunctionControlDontInlineShift   FunctionControlShift = 1

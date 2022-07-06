@@ -2,6 +2,7 @@ package spv
 
 type Dim uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	Dim1D          Dim = 0
 	Dim2D          Dim = 1

@@ -3,6 +3,7 @@ package spv
 type RayFlagsShift uint32
 type RayFlagsMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	RayFlagsOpaqueKHRShift                   RayFlagsShift = 0
 	RayFlagsNoOpaqueKHRShift                 RayFlagsShift = 1

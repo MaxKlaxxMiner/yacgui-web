@@ -2,6 +2,7 @@ package spv
 
 type GroupOperation uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	GroupOperationReduce                     GroupOperation = 0
 	GroupOperationInclusiveScan              GroupOperation = 1

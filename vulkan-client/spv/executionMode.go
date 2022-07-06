@@ -2,6 +2,7 @@ package spv
 
 type ExecutionMode uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ExecutionModeInvocations                      ExecutionMode = 0
 	ExecutionModeSpacingEqual                     ExecutionMode = 1

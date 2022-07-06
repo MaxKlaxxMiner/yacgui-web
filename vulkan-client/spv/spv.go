@@ -1,5 +1,6 @@
 package spv
 
+//goland:noinspection GoUnusedConst
 const (
 	MagicNumber    uint32 = 0x07230203
 	Version        uint32 = 0x00010600

@@ -3,6 +3,7 @@ package spv
 type FPFastMathModeShift uint32
 type FPFastMathModeMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	FPFastMathModeNotNaNShift                 FPFastMathModeShift = 0
 	FPFastMathModeNotInfShift                 FPFastMathModeShift = 1

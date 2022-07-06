@@ -2,6 +2,7 @@ package spv
 
 type FPRoundingMode uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	FPRoundingModeRTE FPRoundingMode = 0
 	FPRoundingModeRTZ FPRoundingMode = 1

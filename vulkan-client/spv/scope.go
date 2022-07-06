@@ -2,6 +2,7 @@ package spv
 
 type Scope uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ScopeCrossDevice    Scope = 0
 	ScopeDevice         Scope = 1

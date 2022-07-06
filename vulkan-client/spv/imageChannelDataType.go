@@ -2,6 +2,7 @@ package spv
 
 type ImageChannelDataType uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ImageChannelDataTypeSnormInt8       ImageChannelDataType = 0
 	ImageChannelDataTypeSnormInt16      ImageChannelDataType = 1

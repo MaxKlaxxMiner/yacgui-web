@@ -2,6 +2,7 @@ package spv
 
 type FunctionParameterAttribute uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	FunctionParameterAttributeZext        FunctionParameterAttribute = 0
 	FunctionParameterAttributeSext        FunctionParameterAttribute = 1

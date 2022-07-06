@@ -2,6 +2,7 @@ package spv
 
 type ExecutionModel uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ExecutionModelVertex                 ExecutionModel = 0
 	ExecutionModelTessellationControl    ExecutionModel = 1

@@ -2,6 +2,7 @@ package spv
 
 type Capability uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	CapabilityMatrix                                       Capability = 0
 	CapabilityShader                                       Capability = 1

@@ -2,6 +2,7 @@ package spv
 
 type StorageClass uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	StorageClassUniformConstant          StorageClass = 0
 	StorageClassInput                    StorageClass = 1

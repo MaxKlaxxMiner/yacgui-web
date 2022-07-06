@@ -2,6 +2,7 @@ package spv
 
 type AccessQualifier uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	AccessQualifierReadOnly  AccessQualifier = 0
 	AccessQualifierWriteOnly AccessQualifier = 1

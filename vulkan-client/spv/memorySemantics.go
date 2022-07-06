@@ -3,6 +3,7 @@ package spv
 type MemorySemanticsShift uint32
 type MemorySemanticsMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	MemorySemanticsAcquireShift                MemorySemanticsShift = 1
 	MemorySemanticsReleaseShift                MemorySemanticsShift = 2

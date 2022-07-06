@@ -3,6 +3,7 @@ package spv
 type ImageOperandsShift uint32
 type ImageOperandsMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ImageOperandsBiasShift                  ImageOperandsShift = 0
 	ImageOperandsLodShift                   ImageOperandsShift = 1

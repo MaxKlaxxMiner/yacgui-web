@@ -3,6 +3,7 @@ package spv
 type SelectionControlShift uint32
 type SelectionControlMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	SelectionControlFlattenShift     SelectionControlShift = 0
 	SelectionControlDontFlattenShift SelectionControlShift = 1

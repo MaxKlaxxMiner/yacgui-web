@@ -2,6 +2,7 @@ package spv
 
 type BuiltIn uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	BuiltInPosition                    BuiltIn = 0
 	BuiltInPointSize                   BuiltIn = 1

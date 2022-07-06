@@ -3,6 +3,7 @@ package spv
 type MemoryAccessShift uint32
 type MemoryAccessMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	MemoryAccessVolatileShift                MemoryAccessShift = 0
 	MemoryAccessAlignedShift                 MemoryAccessShift = 1

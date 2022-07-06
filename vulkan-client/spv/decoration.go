@@ -2,6 +2,7 @@ package spv
 
 type Decoration uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	DecorationRelaxedPrecision                   Decoration = 0
 	DecorationSpecId                             Decoration = 1

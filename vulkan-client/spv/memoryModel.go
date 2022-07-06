@@ -2,6 +2,7 @@ package spv
 
 type MemoryModel uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	MemoryModelSimple    MemoryModel = 0
 	MemoryModelGLSL450   MemoryModel = 1

@@ -2,6 +2,7 @@ package spv
 
 type ImageChannelOrder uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ImageChannelOrderR            ImageChannelOrder = 0
 	ImageChannelOrderA            ImageChannelOrder = 1

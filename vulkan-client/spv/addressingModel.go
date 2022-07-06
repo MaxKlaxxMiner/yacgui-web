@@ -2,6 +2,7 @@ package spv
 
 type AddressingModel uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	AddressingModelLogical                    AddressingModel = 0
 	AddressingModelPhysical32                 AddressingModel = 1

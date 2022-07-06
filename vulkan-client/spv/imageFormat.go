@@ -2,6 +2,7 @@ package spv
 
 type ImageFormat uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	ImageFormatUnknown      ImageFormat = 0
 	ImageFormatRgba32f      ImageFormat = 1

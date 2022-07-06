@@ -3,6 +3,7 @@ package spv
 type FragmentShadingRateShift uint32
 type FragmentShadingRateMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	FragmentShadingRateVertical2PixelsShift   FragmentShadingRateShift = 0
 	FragmentShadingRateVertical4PixelsShift   FragmentShadingRateShift = 1

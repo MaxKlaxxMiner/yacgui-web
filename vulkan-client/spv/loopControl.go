@@ -3,6 +3,7 @@ package spv
 type LoopControlShift uint32
 type LoopControlMask uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	LoopControlUnrollShift                    LoopControlShift = 0
 	LoopControlDontUnrollShift                LoopControlShift = 1

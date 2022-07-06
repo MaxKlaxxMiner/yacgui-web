@@ -2,6 +2,7 @@ package spv
 
 type SamplerAddressingMode uint32
 
+//goland:noinspection GoUnusedConst
 const (
 	SamplerAddressingModeNone           SamplerAddressingMode = 0
 	SamplerAddressingModeClampToEdge    SamplerAddressingMode = 1
