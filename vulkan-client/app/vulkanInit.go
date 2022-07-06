@@ -61,6 +61,10 @@ func (a *App) initVulkan() (err error) {
 		return
 	}
 
+	if err = a.createGraphicsPipeline(); err != nil {
+		return
+	}
+
 	return nil
 }
 
