@@ -8,6 +8,7 @@ import (
 )
 
 func (a *App) cleanupVulkan() {
+	vk.DestroyDevice(a.logicalDevice, nil)
 	if a.config.EnableValidationLayers {
 		vk.DestroyDebugReportCallback(a.instance, a.debugMessenger, nil)
 	}
@@ -26,7 +27,7 @@ func (a *App) initVulkan() (err error) {
 	}
 
 	if err = a.createInstance(); err != nil {
-		return err
+		return
 	}
 
 	if a.config.EnableValidationLayers {
@@ -36,8 +37,13 @@ func (a *App) initVulkan() (err error) {
 	}
 
 	if err = a.pickPhysicalDevice(); err != nil {
-		return err
+		return
 	}
+
+	if err = a.createLogicalDevice(); err != nil {
+		return
+	}
+
 	return nil
 }
 

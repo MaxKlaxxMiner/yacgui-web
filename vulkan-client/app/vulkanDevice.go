@@ -6,6 +6,51 @@ import (
 	"unsafe"
 )
 
+func (a *App) createLogicalDevice() error {
+	indices := findQueueFamilies(a.physicalDevice)
+
+	queueCreateInfo := []vk.DeviceQueueCreateInfo{{
+		SType:            vk.StructureTypeDeviceQueueCreateInfo,
+		PNext:            nil,
+		Flags:            0,
+		QueueFamilyIndex: *indices.graphicsFamily,
+		QueueCount:       1,
+		PQueuePriorities: []float32{1},
+	}}
+
+	//deviceFeatures := []vk.PhysicalDeviceFeatures{}
+
+	deviceCreateInfo := vk.DeviceCreateInfo{
+		SType:                   vk.StructureTypeDeviceCreateInfo,
+		PNext:                   nil,
+		Flags:                   0,
+		QueueCreateInfoCount:    1,
+		PQueueCreateInfos:       queueCreateInfo,
+		EnabledLayerCount:       0,
+		PpEnabledLayerNames:     nil,
+		EnabledExtensionCount:   0,
+		PpEnabledExtensionNames: nil,
+		PEnabledFeatures:        nil,
+	}
+
+	if a.config.EnableValidationLayers {
+		deviceCreateInfo.EnabledLayerCount = uint32(len(a.config.ValidationLayers))
+		deviceCreateInfo.PpEnabledLayerNames = a.config.ValidationLayers
+	}
+
+	var device vk.Device
+	if vk.CreateDevice(a.physicalDevice, &deviceCreateInfo, nil, &device) != vk.Success {
+		return fmt.Errorf("could not create logical device")
+	}
+
+	a.logicalDevice = device
+
+	var deviceQueue vk.Queue
+	vk.GetDeviceQueue(device, *indices.graphicsFamily, 0, &deviceQueue)
+
+	return nil
+}
+
 func isDeviceSuitable(device vk.PhysicalDevice) bool {
 	var deviceProperties vk.PhysicalDeviceProperties
 	var deviceFeatures vk.PhysicalDeviceFeatures

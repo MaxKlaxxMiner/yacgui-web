@@ -10,6 +10,7 @@ import (
 type App struct {
 	win            *glfw.Window
 	physicalDevice vk.PhysicalDevice
+	logicalDevice  vk.Device
 	instance       vk.Instance
 	config         Config
 	debugMessenger vk.DebugReportCallback
