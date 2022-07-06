@@ -8,19 +8,25 @@ import (
 )
 
 type App struct {
-	win            *glfw.Window
-	winSurface     vk.Surface
-	physicalDevice vk.PhysicalDevice
-	logicalDevice  vk.Device
-	instance       vk.Instance
-	config         Config
-	debugMessenger vk.DebugReportCallback
+	win                  *glfw.Window
+	winSurface           vk.Surface
+	physicalDevice       vk.PhysicalDevice
+	logicalDevice        vk.Device
+	instance             vk.Instance
+	config               Config
+	debugMessenger       vk.DebugReportCallback
+	swapChain            vk.Swapchain
+	swapChainImages      []vk.Image
+	swapChainExtent      vk.Extent2D
+	swapChainImageFormat vk.Format
+
 	mouseX, mouseY int
 }
 
 type Config struct {
-	EnableValidationLayers bool
-	ValidationLayers       []string
+	EnableValidationLayers   bool
+	ValidationLayers         []string
+	RequiredDeviceExtensions []string
 }
 
 func New(config Config) *App {

@@ -19,6 +19,8 @@ func main() {
 
 	a := app.New(app.Config{EnableValidationLayers: enableValidationLayers, ValidationLayers: []string{
 		"VK_LAYER_KHRONOS_validation\x00",
+	}, RequiredDeviceExtensions: []string{
+		"VK_KHR_swapchain\x00",
 	}})
 
 	if err := a.Run(); err != nil {
