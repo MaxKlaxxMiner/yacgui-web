@@ -12,6 +12,7 @@ func (a *App) cleanupVulkan() {
 	if a.config.EnableValidationLayers {
 		vk.DestroyDebugReportCallback(a.instance, a.debugMessenger, nil)
 	}
+	vk.DestroySurface(a.instance, a.winSurface, nil)
 	vk.DestroyInstance(a.instance, nil)
 }
 
@@ -34,6 +35,10 @@ func (a *App) initVulkan() (err error) {
 		if err = a.setupDebugMessenger(); err != nil {
 			return
 		}
+	}
+
+	if err = a.createWindowSurface(); err != nil {
+		return
 	}
 
 	if err = a.pickPhysicalDevice(); err != nil {
@@ -88,5 +93,16 @@ func (a *App) createInstance() (err error) {
 		return fmt.Errorf("failed to create instance")
 	}
 	a.instance = instance
+	return nil
+}
+
+func (a *App) createWindowSurface() error {
+	surfaceAddr, err := a.win.CreateWindowSurface(a.instance, nil)
+	if err != nil {
+		return err
+	}
+
+	a.winSurface = vk.SurfaceFromPointer(surfaceAddr)
+
 	return nil
 }

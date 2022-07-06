@@ -9,6 +9,7 @@ import (
 
 type App struct {
 	win            *glfw.Window
+	winSurface     vk.Surface
 	physicalDevice vk.PhysicalDevice
 	logicalDevice  vk.Device
 	instance       vk.Instance
