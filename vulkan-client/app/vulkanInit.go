@@ -8,6 +8,9 @@ import (
 )
 
 func (a *App) cleanupVulkan() {
+	for i := range a.swapChainImageViews {
+		vk.DestroyImageView(a.logicalDevice, a.swapChainImageViews[i], nil)
+	}
 	vk.DestroySwapchain(a.logicalDevice, a.swapChain, nil)
 	vk.DestroyDevice(a.logicalDevice, nil)
 	if a.config.EnableValidationLayers {
@@ -51,6 +54,10 @@ func (a *App) initVulkan() (err error) {
 	}
 
 	if err = a.createSwapChain(); err != nil {
+		return
+	}
+
+	if err = a.createImageViews(); err != nil {
 		return
 	}
 

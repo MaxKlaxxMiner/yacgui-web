@@ -19,6 +19,7 @@ type App struct {
 	swapChainImages      []vk.Image
 	swapChainExtent      vk.Extent2D
 	swapChainImageFormat vk.Format
+	swapChainImageViews  []vk.ImageView
 
 	mouseX, mouseY int
 }

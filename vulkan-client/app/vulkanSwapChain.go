@@ -7,9 +7,6 @@ import (
 
 func (a *App) createSwapChain() error {
 	swapChainSupport := querySwapChainSupport(a.physicalDevice, a.winSurface)
-	swapChainSupport.capabilities.Deref()
-	swapChainSupport.capabilities.Free()
-
 	surfaceFormat := chooseSwapSurfaceFormat(swapChainSupport.surfaceFormats...)
 	presentationMode := chooseSwapPresentMode(swapChainSupport.presentationModes...)
 	swapExtent := chooseSwapExtent(swapChainSupport.capabilities, a.win)
@@ -75,6 +72,14 @@ func querySwapChainSupport(device vk.PhysicalDevice, surface vk.Surface) swapCha
 	var details swapChainSupportDetails
 
 	vk.GetPhysicalDeviceSurfaceCapabilities(device, surface, &details.capabilities)
+	details.capabilities.Deref()
+	details.capabilities.CurrentExtent.Deref()
+	details.capabilities.CurrentExtent.Free()
+	details.capabilities.MinImageExtent.Deref()
+	details.capabilities.MinImageExtent.Free()
+	details.capabilities.MaxImageExtent.Deref()
+	details.capabilities.MaxImageExtent.Free()
+	details.capabilities.Free()
 
 	var formatCount uint32
 	vk.GetPhysicalDeviceSurfaceFormats(device, surface, &formatCount, nil)
@@ -127,15 +132,6 @@ func chooseSwapPresentMode(presentModes ...vk.PresentMode) vk.PresentMode {
 }
 
 func chooseSwapExtent(surfaceCapabilities vk.SurfaceCapabilities, win *glfw.Window) vk.Extent2D {
-	surfaceCapabilities.Deref()
-	surfaceCapabilities.Free()
-	surfaceCapabilities.CurrentExtent.Deref()
-	surfaceCapabilities.CurrentExtent.Free()
-	surfaceCapabilities.MaxImageExtent.Deref()
-	surfaceCapabilities.MaxImageExtent.Free()
-	surfaceCapabilities.MinImageExtent.Deref()
-	surfaceCapabilities.MinImageExtent.Free()
-
 	//if surfaceCapabilities.CurrentExtent.Width != vk.MaxUint32 {
 	//	return surfaceCapabilities.CurrentExtent
 	//}
@@ -162,4 +158,41 @@ func chooseSwapExtent(surfaceCapabilities vk.SurfaceCapabilities, win *glfw.Wind
 	}
 
 	return actualExtent
+}
+
+func (a *App) createImageViews() error {
+	a.swapChainImageViews = make([]vk.ImageView, len(a.swapChainImages))
+
+	for i, image := range a.swapChainImages {
+		createInfo := vk.ImageViewCreateInfo{
+			SType:    vk.StructureTypeImageViewCreateInfo,
+			PNext:    nil,
+			Flags:    0,
+			Image:    image,
+			ViewType: vk.ImageViewType2d,
+			Format:   a.swapChainImageFormat,
+			Components: vk.ComponentMapping{
+				R: vk.ComponentSwizzleIdentity,
+				G: vk.ComponentSwizzleIdentity,
+				B: vk.ComponentSwizzleIdentity,
+				A: vk.ComponentSwizzleIdentity,
+			},
+			SubresourceRange: vk.ImageSubresourceRange{
+				AspectMask:     vk.ImageAspectFlags(vk.ImageAspectColorBit),
+				BaseMipLevel:   0,
+				LevelCount:     1,
+				BaseArrayLayer: 0,
+				LayerCount:     1,
+			},
+		}
+		var imageView vk.ImageView
+		err := vk.Error(vk.CreateImageView(a.logicalDevice, &createInfo, nil, &imageView))
+		if err != nil {
+			return err
+		}
+
+		a.swapChainImageViews[i] = imageView
+	}
+
+	return nil
 }
