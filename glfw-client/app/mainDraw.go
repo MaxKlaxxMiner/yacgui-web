@@ -9,6 +9,8 @@ import (
 var winWidth int
 var winHeight int
 var posUniform int32
+var MouseY float64
+var MouseX float64
 
 func MainDraw(window *glfw.Window) {
 	gl.ClearColor(0, 0.25, 0.5, 1.0)
@@ -28,13 +30,8 @@ func MainDraw(window *glfw.Window) {
 		posUniform = gl.GetUniformLocation(shaderProgram, gl.Str("ppos\x00"))
 	}
 
-	//double xpos, ypos;
-	//glfwGetCursorPos(window, &xpos, &ypos);
-	mx, my := window.GetCursorPos()
-
-	gl.Uniform2f(posUniform, float32(mx), float32(my))
-
-	gl.BindVertexArray(vao)              // bind data
-	gl.DrawArrays(gl.TRIANGLE_FAN, 0, 4) // perform draw call
-	gl.BindVertexArray(0)                // unbind data (so we don't mistakenly use/modify it)
+	gl.Uniform2f(posUniform, float32(MouseX), float32(MouseY))
+	gl.BindVertexArray(vao)
+	gl.DrawArrays(gl.TRIANGLE_FAN, 0, 4)
+	gl.BindVertexArray(0)
 }

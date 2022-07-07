@@ -6,6 +6,7 @@ import (
 	"glfw-client/app"
 	"runtime"
 	"strconv"
+	"time"
 )
 
 func init() {
@@ -39,22 +40,44 @@ func main() {
 
 	app.MainInit(window)
 
+	lastFrameTime := time.Now()
+	lastActionTime := time.Now()
 	fpsCounter := 0
 	fpsTime := int(glfw.GetTime())
 	for !window.ShouldClose() {
 		// poll events and call their registered callbacks
 		glfw.PollEvents()
 
-		app.MainDraw(window)
+		refresh := time.Since(lastFrameTime) > 100*time.Millisecond
 
-		window.SwapBuffers()
+		mx, my := window.GetCursorPos()
+		if mx != app.MouseX || my != app.MouseY {
+			app.MouseX = mx
+			app.MouseY = my
+			lastActionTime = time.Now()
+			refresh = true
+		}
 
-		fpsCounter++
-		tim := int(glfw.GetTime())
-		if tim != fpsTime {
-			fpsTime = tim
-			window.SetTitle("fps: " + strconv.Itoa(fpsCounter))
-			fpsCounter = 0
+		if refresh {
+			app.MainDraw(window)
+			window.SwapBuffers()
+			lastFrameTime = time.Now()
+			fpsCounter++
+			tim := int(glfw.GetTime())
+			if tim != fpsTime {
+				fpsTime = tim
+				window.SetTitle("fps: " + strconv.Itoa(fpsCounter))
+				fpsCounter = 0
+			}
+		} else {
+			since := time.Since(lastActionTime)
+			if since > 100*time.Millisecond {
+				if since < 500*time.Millisecond {
+					time.Sleep(time.Millisecond)
+				} else {
+					time.Sleep(time.Millisecond * 20)
+				}
+			}
 		}
 	}
 }
